@@ -1,0 +1,45 @@
+Create Subsystems:
+ - Coral Manipulator:
+  - Tilt control
+  - Intake wheels
+   - Allow Individual Control of each side to permit spinning the coral when
+     dropping into trough.
+  - Color Sensor
+  - Tilt Limits
+  - Stall Detection
+  - Hardware:
+   - VictorSPX x 3
+    - 2 Intake Wheel Motors
+    - 1 Tilt Motors
+   - REV Through bore encoder
+    - Absolute mode (use DutyCycleEncoder)
+   - REV Color Sensor
+
+ - Algae Manipulator:
+  - Tilt control
+  - Intake wheels control
+  - Proximity Sensor
+  - Hardware:
+   - VictorSPX x 2?
+    - Both tilt motors wired to one controller?
+    - Intake Motor
+   - REV Through bore encoder
+    - Absolute mode (use DutyCycleEncoder)
+   - IR Proximity Sensor
+    - Same as on summer bot
+
+- Vision:
+ - Provide information for drivetrain to steer toward a target (apiltag or game piece)
+ - Hardware:
+  - Photonvision SBC
+  - Webcams
+
+- LED Control:
+ - Put data on networktables to control DS LEDs
+
+Improve Subystems:
+ - See comments in Subsystems
+
+
+Create Commands:
+ - TODO

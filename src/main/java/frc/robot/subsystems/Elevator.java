@@ -4,6 +4,7 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.math.MathUtil;
@@ -18,6 +19,18 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstants;
 
 public class Elevator extends SubsystemBase {
+
+  //TODO:
+  /*
+   * Limit Switches
+   *  Automatically Zero When Limit Switch is Detected
+   * Auto-Home
+   * Enable/Disable Control
+   * Stall Detection
+   * Soft Distance Limits
+   *  Allow Movement only away from limit when distance limit is hit
+   * 
+   */
 
   private VictorSPX leftElevatorMotor  = new VictorSPX(ElevatorConstants.LEFT_ELEVATOR_MOTOR_ID);
   private VictorSPX rightElevatorMotor = new VictorSPX(ElevatorConstants.RIGHT_ELEVATOR_MOTOR_ID);
@@ -40,20 +53,25 @@ public class Elevator extends SubsystemBase {
 
   /** Creates a new ElevatorSubsystem. */
   public Elevator() {
+
+    leftElevatorMotor.setInverted(ElevatorConstants.LEFT_INVERT);
+    rightElevatorMotor.setInverted(ElevatorConstants.RIGHT_INVERT);
+
     leftElevatorMotor.setNeutralMode(NeutralMode.Brake);
     rightElevatorMotor.setNeutralMode(NeutralMode.Brake);
 
     rightElevatorMotor.follow(leftElevatorMotor);
 
-    elevatorRelativeEncoder.setDistancePerPulse(ElevatorConstants.POSITION_CONVERSION_FACTOR);
+    elevatorRelativeEncoder.setDistancePerPulse(ElevatorConstants.DISTANCE_PER_PULSE_M);
+    elevatorRelativeEncoder.reset();
   }
 
   public double getPosition() {
-    return elevatorRelativeEncoder.getRate();
+    return elevatorRelativeEncoder.getDistance();
   }
 
   public double getVelocity() {
-    return elevatorRelativeEncoder.getDistance();
+    return elevatorRelativeEncoder.getRate();
   }
 
   public void setProfiled(double setPoint) {
@@ -67,6 +85,14 @@ public class Elevator extends SubsystemBase {
     currentTargetState = null; //set the target state to null, alterting periodic() to quit any profiled motion.
     this.setPoint = setPoint;
   }
+
+  public void enableControl() {
+    
+  }
+
+  public void disableControl() {
+
+  }
   
   @Override
   public void periodic() {
@@ -75,7 +101,7 @@ public class Elevator extends SubsystemBase {
     //if executing a profiled sequence, currentTargetSate will not be null:
     if (currentTargetState != null) {
       TrapezoidProfile.State target = motionProfile.calculate(motionProfileTimer.get(), currentInitialState, currentTargetState);
-      elevator.set(elevatorPID.calculate(getPosition(), target.position) + elevatorFF.calculate(target.velocity));
+      leftElevatorMotor.set(ControlMode.PercentOutput, elevatorPID.calculate(getPosition(), target.position) + elevatorFF.calculate(target.velocity));
 
       if (MathUtil.isNear(0, target.velocity, 0.05)) {
         setPoint = currentTargetState.position;
@@ -83,7 +109,7 @@ public class Elevator extends SubsystemBase {
       }
     }
     else {
-      elevator.set(elevatorPID.calculate(getPosition(), setPoint));
+      leftElevatorMotor.set(ControlMode.PercentOutput, elevatorPID.calculate(getPosition(), setPoint));
     }
   }
 }

@@ -4,21 +4,40 @@
 
 package frc.robot.subsystems;
 
+import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.SparkMax;
+import com.revrobotics.spark.SparkRelativeEncoder;
+import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.config.RobotConfig;
+import com.pathplanner.lib.controllers.PPLTVController;
 import com.revrobotics.spark.SparkBase.PersistMode;
 import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 import com.revrobotics.spark.config.SparkMaxConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
 
+import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
+import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
 import frc.robot.Constants;
+import frc.robot.Constants.DrivetrainConstants;
 
 
 public class Drivetrain extends SubsystemBase {
+
+  RobotConfig config;
+
+  private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
 
   private final SparkMax frontLeft = new SparkMax(Constants.DrivetrainConstants.FL_MOTOR_ID, MotorType.kBrushless);
   private final SparkMaxConfig frontLeftConfig = new SparkMaxConfig();
@@ -29,7 +48,12 @@ public class Drivetrain extends SubsystemBase {
   private final SparkMax rearRight = new SparkMax(Constants.DrivetrainConstants.RR_MOTOR_ID, MotorType.kBrushless);
   private final SparkMaxConfig rearRightConfig = new SparkMaxConfig();
 
-  private DifferentialDrive Drivetrain = new DifferentialDrive(frontLeft::set, frontRight::set);
+  private RelativeEncoder leftEncoder  = frontLeft.getEncoder();
+  private RelativeEncoder rightEncoder = frontRight.getEncoder();
+
+  private DifferentialDrive           drivetrain = new DifferentialDrive(frontLeft::set, frontRight::set);
+  private DifferentialDriveOdometry   odometry   = new DifferentialDriveOdometry(new Rotation2d(0), 0, 0);
+  private DifferentialDriveKinematics kinematics = new DifferentialDriveKinematics(DrivetrainConstants.TRACKWIDTH_M);
 
   
   /** Creates a new Drivetrain. */
@@ -37,10 +61,14 @@ public class Drivetrain extends SubsystemBase {
     frontLeftConfig.inverted(Constants.DrivetrainConstants.FL_INVERT);
     frontLeftConfig.idleMode(IdleMode.kBrake);
     frontLeftConfig.smartCurrentLimit(40);
+    frontLeftConfig.encoder.positionConversionFactor(DrivetrainConstants.ENCODER_DISTANCE_CONVERSION_FACTOR);
+    frontLeftConfig.encoder.velocityConversionFactor(DrivetrainConstants.ENCODER_VELOCITY_CONVERSION_FACTOR);
 
     frontRightConfig.inverted(Constants.DrivetrainConstants.FR_INVERT);
     frontRightConfig.idleMode(IdleMode.kBrake);
     frontRightConfig.smartCurrentLimit(40);
+    frontRightConfig.encoder.positionConversionFactor(DrivetrainConstants.ENCODER_DISTANCE_CONVERSION_FACTOR);
+    frontRightConfig.encoder.velocityConversionFactor(DrivetrainConstants.ENCODER_VELOCITY_CONVERSION_FACTOR);
 
     rearLeftConfig.inverted(Constants.DrivetrainConstants.RL_INVERT);
     rearLeftConfig.idleMode(IdleMode.kBrake);
@@ -56,16 +84,69 @@ public class Drivetrain extends SubsystemBase {
     frontRight.configure(frontRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     rearLeft.configure(rearLeftConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     rearRight.configure(rearRightConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
+
+
+    
+    //CONFIGURE PATHPLANNER
+    try{
+      config = RobotConfig.fromGUISettings();
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  
+    AutoBuilder.configure(
+      this::getPose,
+      this::resetPose,
+      this::getRobotRelativeSpeeds,
+      (speeds, feedforwards) -> driveRobotRelative(speeds),
+      new PPLTVController(0.02),
+      config,
+      () -> {
+        var alliance = DriverStation.getAlliance();
+        if (alliance.isPresent()) {
+          return alliance.get() == DriverStation.Alliance.Red;
+        }
+        return false;
+      },
+      this
+    );
+    
+  }
+
+  
+
+  Pose2d getPose() {
+    return odometry.getPoseMeters();
+  }
+
+  void resetPose(Pose2d pose) {
+    gyro.reset();
+    gyro.setAngleAdjustment(pose.getRotation().getDegrees());
+    odometry.resetPose(pose);
+  }
+
+  ChassisSpeeds getRobotRelativeSpeeds() {
+    return kinematics.toChassisSpeeds(new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity()));
+  }
+
+  void driveRobotRelative(ChassisSpeeds speeds) {
+    DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(speeds);
+    
+    drivetrain.tankDrive (
+      wheelSpeeds.leftMetersPerSecond / DrivetrainConstants.MAX_LINEAR_VELOCITY_MS,
+      wheelSpeeds.rightMetersPerSecond / DrivetrainConstants.MAX_LINEAR_VELOCITY_MS
+    );
     
   }
   
   public void drive(double xSpeed, double zRotation) {
-    Drivetrain.arcadeDrive(xSpeed, zRotation);
+    drivetrain.arcadeDrive(xSpeed, zRotation);
   }
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
+    //Update Odometry
+    odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
   }
 
 

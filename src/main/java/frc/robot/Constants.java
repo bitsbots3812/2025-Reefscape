@@ -3,7 +3,7 @@ package frc.robot;
 import edu.wpi.first.math.util.Units;
 
 public class Constants {
-    public class DrivetrainConstants {
+    public static final class DrivetrainConstants {
 
         public static final int FL_MOTOR_ID = 10;
         public static final int FR_MOTOR_ID = 11;
@@ -14,9 +14,27 @@ public class Constants {
         public static final boolean FR_INVERT = false;
         public static final boolean RL_INVERT = false;
         public static final boolean RR_INVERT = false;
+
+        public static final double MOTOR_MAX_RPM = 5700.0;
+        public static final double GEARBOX_RATIO = 10.71;
+        public static final double WHEEL_SIZE_M = Units.inchesToMeters(6.0);
+        public static final double TRACKWIDTH_M = Units.inchesToMeters(21.5);
+
+        //Motor revolutions to robot distance traveled
+        public static final double ENCODER_DISTANCE_CONVERSION_FACTOR = (WHEEL_SIZE_M * Math.PI) / GEARBOX_RATIO;
+        //Motor RPM to robot speed in M/S
+        public static final double ENCODER_VELOCITY_CONVERSION_FACTOR = (1.0 / 60.0) * ENCODER_DISTANCE_CONVERSION_FACTOR;
+
+        public static final double MAX_LINEAR_VELOCITY_MS = ENCODER_VELOCITY_CONVERSION_FACTOR * MOTOR_MAX_RPM;
     }
 
     public static final class ElevatorConstants {
+
+        //Distance Limits
+        public static final double ELEVATOR_MAX_HEIGHT_M = Units.inchesToMeters(28);
+        public static final double ELEVATOR_MIN_HEIGHT_M = 0;
+        
+        //Ports
         public static final int LEFT_ELEVATOR_MOTOR_ID = 99;
         public static final int RIGHT_ELEVATOR_MOTOR_ID = 98;
 
@@ -41,5 +59,20 @@ public class Constants {
         public static final double ELEVATOR_MAX_SPEED_MS = (ELEVATOR_MOTOR_RPS_MAX / MOTOR_GEAR_RATIO) * PINION_GEAR_DIAMETER_M * Math.PI;
         //Converts the motor revolutions into meters of elevator travel:
         public static final double DISTANCE_PER_PULSE_M = (PINION_GEAR_DIAMETER_M * Math.PI) / 8192.0;
+    }
+
+    public static final class AlgaeManipulatorConstants {
+        //Ports
+        public static final int CENTRAL_TILT_MOTOR_ID = 2364839; //thats a placeholder
+        public static final int CENTRAL_INTAKE_MOTOR_ID = 2364839;
+
+        public static final int ENCODER_CHANNEL = 0; // not sure yet
+
+        public static final int DIGITALINPUT_ID = 2364839;
+
+        //PID Controller Constants
+        public static final double PID_P = 0.01;
+        public static final double PID_I = 0;
+        public static final double PID_D = 0;
     }
 }
