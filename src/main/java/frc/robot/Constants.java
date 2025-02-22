@@ -1,6 +1,14 @@
 package frc.robot;
 
+import java.util.function.DoubleConsumer;
+import java.util.function.DoubleSupplier;
+
+import edu.wpi.first.wpilibj.CounterBase.EncodingType;
+
 import edu.wpi.first.math.util.Units;
+import frc.robot.common.ArmController.AngleUnit;
+import frc.robot.common.ConstraintClasses.RangeConstraint;
+import frc.robot.subsystems.PDP;
 
 public class Constants {
     public static final class DrivetrainConstants {
@@ -28,7 +36,7 @@ public class Constants {
         public static final double MAX_LINEAR_VELOCITY_MS = ENCODER_VELOCITY_CONVERSION_FACTOR * MOTOR_MAX_RPM;
     }
 
-    public static final class ElevatorConstants {
+    /*public static final class ElevatorConstants {
 
         //Distance Limits
         public static final double ELEVATOR_MAX_HEIGHT_M = Units.inchesToMeters(28);
@@ -59,7 +67,57 @@ public class Constants {
         public static final double ELEVATOR_MAX_SPEED_MS = (ELEVATOR_MOTOR_RPS_MAX / MOTOR_GEAR_RATIO) * PINION_GEAR_DIAMETER_M * Math.PI;
         //Converts the motor revolutions into meters of elevator travel:
         public static final double DISTANCE_PER_PULSE_M = (PINION_GEAR_DIAMETER_M * Math.PI) / 8192.0;
-    }
+    }*/
+
+    public static final class ElevatorConstants {
+
+        //Ports
+        public static final int LEFT_ELEVATOR_MOTOR_ID = 99;
+        public static final int RIGHT_ELEVATOR_MOTOR_ID = 98;
+
+        public static final boolean LEFT_INVERT = false;
+        public static final boolean RIGHT_INVERT = true;
+
+        public static final int ENCODER_CHANNEL_A = 0;
+        public static final int ENCODER_CHANNAL_B = 1;
+    
+        //Current Limits
+        public static final double STALL_THRESHOLD_AMPS = 40.0; //TODO: tune this
+        public static final int ELEVATOR_MOTOR_SMART_CURRENT_LIMIT = 40;
+    
+        public static final double VELOCITY_TOLERANCE_MS = 0.001;
+
+        //Autohome constants
+        public static final double AUTOHOME_OUTPUT_PERCENT = 0.1;
+        public static final double AUTOHOME_WAIT_TIME_SEC = 0.5;
+    
+        //Setpoints
+        public static final double SETPOINT_1 = Units.inchesToMeters(5);
+        public static final double SETPOINT_2 = Units.inchesToMeters(15);
+        public static final double SETPOINT_3 = Units.inchesToMeters(26);
+        public static final double SETPOINT_HOME = 0;
+    
+        //PID Controller Constants
+        public static final double PID_P = 12.0;
+        public static final double PID_I = 0.0;
+        public static final double PID_D = 0.0;
+    
+        public static final double SETPOINT_TOLERANCE = 0.01; //1 cm
+    
+        //FeedForward Controller Constants
+    
+        //System Constants
+        public static final double ELEVATOR_MAX_HEIGHT_M = Units.inchesToMeters(26.5);
+    
+        public static final double ELEVATOR_ALLOWED_ACCEL_MSS = 1.0;
+        public static final double MOTOR_GEAR_RATIO = 26.0;
+        public static final double PINION_GEAR_DIAMETER_M = Units.inchesToMeters(3);
+        public static final double ELEVATOR_MOTOR_RPS_MAX = 5700.0/60.0;
+        public static final double ELEVATOR_MAX_SPEED_MS = (ELEVATOR_MOTOR_RPS_MAX / MOTOR_GEAR_RATIO) * PINION_GEAR_DIAMETER_M * Math.PI;
+        //Converts the motor revolutions into meters of elevator travel:
+        public static final double DISTANCE_PER_PULSE_M = (PINION_GEAR_DIAMETER_M * Math.PI) / 8192.0;
+      }
+    
 
     public static final class AlgaeManipulatorConstants {
         //Ports
@@ -74,5 +132,43 @@ public class Constants {
         public static final double PID_P = 0.01;
         public static final double PID_I = 0;
         public static final double PID_D = 0;
+
+        //Angle Information
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+        public static final double ANGLE_SETPOINT_TOLERANCE = 0;
+        public static final RangeConstraint allowedAngleRange = new RangeConstraint(0, 90);
+
+        //Feedforward Gains
+        public static final double FF_KS = 0;
+        public static final double FF_KG = 0;
+        public static final double FF_KV = 0;
+
+        //Motion profile constraints
+        public static final double MAX_ANGULAR_VELOCITY = 0;
+        public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 0;
+
+        //Angle Unit
+        public static final AngleUnit angleUnit = AngleUnit.DEGREES;
+    }
+
+    public static final class CoralManipulatorConstants {
+        //Ports
+        public static final int CORAL_TILT_MOTOR_ID = 
+        //PID contoller consts
+
+        //Angle Information
+
+        //FeedForward gains
+
+        //Motion profile constraints
+
+        //Angle Unit
+    }
+
+    public static final class PDPConstants {
+
+        public static final int LEFT_ELEVATOR_MOTOR_PDP_PORT = 0;
+        public static final int RIGHT_ELEVATOR_MOTOR_PDP_PORT = 0;
+
     }
 }

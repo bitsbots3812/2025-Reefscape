@@ -115,21 +115,21 @@ public class Drivetrain extends SubsystemBase {
 
   
 
-  Pose2d getPose() {
+  public Pose2d getPose() {
     return odometry.getPoseMeters();
   }
 
-  void resetPose(Pose2d pose) {
+  public void resetPose(Pose2d pose) {
     gyro.reset();
     gyro.setAngleAdjustment(pose.getRotation().getDegrees());
     odometry.resetPose(pose);
   }
 
-  ChassisSpeeds getRobotRelativeSpeeds() {
+  public ChassisSpeeds getRobotRelativeSpeeds() {
     return kinematics.toChassisSpeeds(new DifferentialDriveWheelSpeeds(leftEncoder.getVelocity(), rightEncoder.getVelocity()));
   }
 
-  void driveRobotRelative(ChassisSpeeds speeds) {
+  public void driveRobotRelative(ChassisSpeeds speeds) {
     DifferentialDriveWheelSpeeds wheelSpeeds = kinematics.toWheelSpeeds(speeds);
     
     drivetrain.tankDrive (
