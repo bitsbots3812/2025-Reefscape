@@ -171,7 +171,7 @@ public class Elevator extends SubsystemBase {
     SmartDashboard.putNumber("Elevator Position (Inches): ", Units.metersToInches(getPosition()));
     SmartDashboard.putString("Elevator Mode: ", currentState.displayName);
     SmartDashboard.putNumber("Elevator Setpoint (Inches): ", Units.metersToInches(setPoint));
-    SmartDashboard.putNumber("Elevator Motor Output Percent", elevator.getAppliedOutput());
+    SmartDashboard.putNumber("Elevator Motor Output Percent", elevatorMotorLeft.getMotorOutputPercent());
     SmartDashboard.putBoolean("Elevator at Setpoint: ", atSetpoint());
     SmartDashboard.putNumber("Elevator velocity (M/S): ", getVelocity());
 
