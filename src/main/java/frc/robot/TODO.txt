@@ -1,12 +1,12 @@
 Create Subsystems:
- - Coral Manipulator:
-  - Tilt control
-  - Intake wheels
+ - Coral Manipulator: 
+  - Tilt control ✔
+  - Intake wheels✔
    - Allow Individual Control of each side to permit spinning the coral when
-     dropping into trough.
-  - Color Sensor
-  - Tilt Limits
-  - Stall Detection
+     dropping into trough.✔
+  - Color Sensor 🔄
+  - Tilt Limits ✔
+  - Stall Detection🔄(ON HOLD)
   - Hardware:
    - VictorSPX x 3
     - 2 Intake Wheel Motors

@@ -4,7 +4,7 @@ import java.util.function.DoubleConsumer;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.CounterBase.EncodingType;
-
+import edu.wpi.first.wpilibj.I2C;
 import edu.wpi.first.math.util.Units;
 import frc.robot.common.ArmController.AngleUnit;
 import frc.robot.common.ConstraintClasses.RangeConstraint;
@@ -153,16 +153,32 @@ public class Constants {
 
     public static final class CoralManipulatorConstants {
         //Ports
-        public static final int CORAL_TILT_MOTOR_ID = 
+        public static final int TILT_MOTOR_ID = 2025; //any values are placeholders FYI
+        public static final int INTAKE_MOTOR_ID_A = 2025;
+        public static final int INTAKE_MOTOR_ID_B = 2025;
+
+        public static final int ENCODER_CHANNEL = 2025;
         //PID contoller consts
-
+        public static final int PID_A = 0;
+        public static final int PID_B = 0;
+        public static final int PID_C = 0;
         //Angle Information
-
+        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
+        public static final double ANGLE_SETPOINT_TOLERANCE = 0;
+        public static final RangeConstraint allowedAngleRange = new RangeConstraint(-10, 90);
         //FeedForward gains
-
+        public static final double FF_KS = 0;
+        public static final double FF_KG = 0;
+        public static final double FF_KV = 0;
         //Motion profile constraints
-
+        public static final double MAX_ANGULAR_VELOCITY = 0;
+        public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 0;
         //Angle Unit
+        public static final AngleUnit angleUnit = AngleUnit.DEGREES;
+        //Color sensor 
+        public static final int redVal = 255;
+        public static final int greenVal = 255;
+        public static final int blueVal = 255;
     }
 
     public static final class PDPConstants {

@@ -12,17 +12,15 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.robot.common.ConstraintClasses.RangeConstraint;
-import frc.robot.Constants.ElevatorConstants;
 
 /** Add your docs here. */
 public class ArmController {
 
     public enum AngleUnit {
-        DEGREES(180.0 / Math.PI, "Degrees"),
+        DEGREES(Math.PI / 180.0, "Degrees"),
         RADIANS(1, "Radians"),
         ROTATIONS(2 * Math.PI, "Rotations");
 
@@ -54,7 +52,7 @@ public class ArmController {
     //=========================
     private String displayName;
 
-    private DoubleConsumer setAngleMotorPower;
+    private DoubleConsumer setAngleMotor;
     private DoubleSupplier getAbsoluteEncoderAngle;
     private DoubleSupplier getAngularVelocity;
 
@@ -93,7 +91,7 @@ public class ArmController {
      * +------------> 0
      *    <Floor>
      * 
-     * @param setAngleMotorPower a DoubleConsumer that takes an input between -1.0 and 1.0 and sets the angle control motors. A positive input must correspond to the motor moving in the positive angular direction.
+     * @param setAngleMotor a doubleConsumer that sets the angle motors. A positive input must correspond to the motor moving in the positive angular direction.
      * @param getAbsoluteEncoderAngle a DoubleSupplier that provides the angle from an absolute encoder in the unit defined by the angleUnit parameter
      * @param getAngularVelocity a DoubleSupplier that provides the angular velocity of the arm in angular units per second
      * @param ABSOLUTE_ENCODER_OFFSET an offset that will be subtracted from the output of getAbsoluteEncoderAngle
@@ -112,7 +110,7 @@ public class ArmController {
      */
     public ArmController (
         //Functional Interfaces
-        DoubleConsumer setAngleMotorPower,
+        DoubleConsumer setAngleMotor,
         DoubleSupplier getAbsoluteEncoderAngle,
         DoubleSupplier getAngularVelocity,
 
@@ -142,7 +140,7 @@ public class ArmController {
         AngleUnit angleUnit
     ) 
     {
-        this.setAngleMotorPower      = setAngleMotorPower;
+        this.setAngleMotor      = setAngleMotor;
         this.getAbsoluteEncoderAngle = getAbsoluteEncoderAngle;
         this.getAngularVelocity      = getAngularVelocity;
 
@@ -153,8 +151,9 @@ public class ArmController {
         pid = new PIDController(PID_P, PID_I, PID_D);
         ff  = new ArmFeedforward(FF_KS, FF_KG, FF_KV);
 
-        motionProfile = new TrapezoidProfile(new Constraints(MAX_ANGULAR_VELOCITY, MAX_PROFILED_ANGULAR_ACCELERATION));
+        motionProfile = new TrapezoidProfile(new Constraints(MAX_ANGULAR_VELOCITY * angleUnit.conversionFactorToRadians, MAX_PROFILED_ANGULAR_ACCELERATION * angleUnit.conversionFactorToRadians));
 
+        this.displayName = displayName;
         this.angleUnit  = angleUnit;
     }
 
@@ -171,6 +170,7 @@ public class ArmController {
     public void enable() {
         currentControlState = AngleControlState.POSITION_CONTROL;
         setpoint = getAngle(); //Change setpoint to the current position to prevent erratic movement.
+        pid.reset();
     }
 
     /**
@@ -186,6 +186,7 @@ public class ArmController {
      */
     public void setAngle(double setpoint) {
         this.setpoint = allowedAngleRange.clamp(setpoint);
+        pid.reset();
     }
 
     /**
@@ -214,6 +215,7 @@ public class ArmController {
         this.setpoint = allowedAngleRange.clamp(setpoint);
 
         motionProfileTimer.restart();
+        pid.reset();
 
     }
 
@@ -235,29 +237,37 @@ public class ArmController {
     /**
      * Must be called in a periodic method to run the arm.
      */
-    void execute() {
+    public void execute() {
 
         if (debugDataEnabled) {
             SmartDashboard.putString(displayName + " State: ", getState().displayName);
             SmartDashboard.putNumber(displayName + "  Current Angle (" + angleUnit.displayString + "): ", getAngle());
+            SmartDashboard.putNumber(displayName + "  Angular Velocity (" + angleUnit.displayString + " per sec): ", getVelocity());
             SmartDashboard.putNumber(displayName + "  Angle Setpoint (" + angleUnit.displayString + "): ", setpoint);
             SmartDashboard.putBoolean(displayName + "  at Setpoint: ", atSetpoint());
             //SmartDashboard.putNumber(displayName + "  Angle Motor Output Power: ", );
         }
 
+        double pidOutput = 0;
+        double ffOutput = 0;
+
         //Primary control handling
         switch (currentControlState) {
           case DISABLED:
-            setAngleMotorPower.accept(0);
+            setAngleMotor.accept(0);
             break;
 
           case POSITION_CONTROL:
-            setAngleMotorPower.accept(pid.calculate(getAngle(), setpoint));
+            pidOutput = pid.calculate(getAngle(), setpoint);
+            ffOutput =  ff.calculate(setpoint * angleUnit.conversionFactorToRadians, 0);
+            setAngleMotor.accept(pidOutput + ffOutput);
             break;
 
           case PROFILED_CONTROL:
             TrapezoidProfile.State target = motionProfile.calculate(motionProfileTimer.get(), currentInitialState, currentTargetState);
-            setAngleMotorPower.accept(pid.calculate(getAngle(), allowedAngleRange.clamp(target.position)) + ff.calculate(target.position * angleUnit.conversionFactorToRadians, target.velocity));
+            pidOutput = pid.calculate(getAngle(), allowedAngleRange.clamp(target.position));
+            ffOutput = ff.calculate(target.position * angleUnit.conversionFactorToRadians, target.velocity * angleUnit.conversionFactorToRadians);
+            setAngleMotor.accept(pidOutput + ffOutput);
 
             if (target.position == setpoint) {
               currentControlState = AngleControlState.POSITION_CONTROL;
@@ -266,5 +276,8 @@ public class ArmController {
             break;
 
         }
+
+        SmartDashboard.putNumber(displayName + "PID Output: ", pidOutput);
+        SmartDashboard.putNumber(displayName + "FF Output: ", ffOutput);
     }
 }
