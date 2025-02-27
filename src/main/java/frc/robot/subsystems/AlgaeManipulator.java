@@ -10,6 +10,7 @@ import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.wpilibj.AnalogEncoder;
+import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
@@ -23,16 +24,18 @@ import frc.robot.common.EncoderVelocityTracker;
 public class AlgaeManipulator extends SubsystemBase {
   
   //Initializing hardware & other stuff
-  private VictorSPX centralTiltMotor = new VictorSPX(AlgaeManipulatorConstants.CENTRAL_TILT_MOTOR_ID);
+  private VictorSPX leftTiltMotor = new VictorSPX(AlgaeManipulatorConstants.LEFT_TILT_MOTOR_ID);
+  private VictorSPX rightTiltMotor = new VictorSPX(AlgaeManipulatorConstants.RIGHT_TILT_MOTOR_ID);
   private VictorSPX centralIntakeMotor = new VictorSPX(AlgaeManipulatorConstants.CENTRAL_INTAKE_MOTOR_ID);
-  private AnalogEncoder tiltEncoder = new AnalogEncoder(AlgaeManipulatorConstants.ENCODER_CHANNEL);
+  private AnalogEncoder leftTiltEncoder = new AnalogEncoder(new AnalogInput(AlgaeManipulatorConstants.LEFT_ENCODER_CHANNEL));
+  private AnalogEncoder rightTiltEncoder = new AnalogEncoder(new AnalogInput(AlgaeManipulatorConstants.RIGHT_ENCODER_CHANNEL));
   private DigitalInput irSensor = new DigitalInput(AlgaeManipulatorConstants.DIGITALINPUT_ID);
 
-  private ArmController arm = new ArmController(
+  private ArmController armLeft = new ArmController(
     //Functional Interfaces
-    (double speed) -> {centralTiltMotor.set(ControlMode.PercentOutput, speed);},
-    this::getRawAngle,
-    this::getAngularVelocity,
+    (double speed) -> {leftTiltMotor.set(ControlMode.PercentOutput, speed);},
+    this::getRawAngleLeft,
+    this::getAngularVelocityLeft,
 
     //Angle Information
     AlgaeManipulatorConstants.ABSOLUTE_ENCODER_OFFSET,
@@ -60,51 +63,120 @@ public class AlgaeManipulator extends SubsystemBase {
     AlgaeManipulatorConstants.angleUnit
   );
 
-  EncoderVelocityTracker velocityTracker = new EncoderVelocityTracker(this::getRawAngle);
+  private ArmController armRight = new ArmController(
+    //Functional Interfaces
+    (double speed) -> {rightTiltMotor.set(ControlMode.PercentOutput, speed);},
+    this::getRawAngleRight,
+    this::getAngularVelocityRight,
+
+    //Angle Information
+    AlgaeManipulatorConstants.ABSOLUTE_ENCODER_OFFSET,
+    AlgaeManipulatorConstants.ANGLE_SETPOINT_TOLERANCE,
+    AlgaeManipulatorConstants.allowedAngleRange,
+    
+    //PID Gains
+    AlgaeManipulatorConstants.PID_P,
+    AlgaeManipulatorConstants.PID_I,
+    AlgaeManipulatorConstants.PID_D,
+
+    //Feedforward Gains
+    AlgaeManipulatorConstants.FF_KS,
+    AlgaeManipulatorConstants.FF_KG,
+    AlgaeManipulatorConstants.FF_KV,
+
+    //Motion profile constraints
+    AlgaeManipulatorConstants.MAX_ANGULAR_VELOCITY,
+    AlgaeManipulatorConstants.MAX_PROFILED_ANGULAR_ACCELERATION,
+
+    //Display Strings
+    "Algae Arm",
+
+    //Angle Unit Selection
+    AlgaeManipulatorConstants.angleUnit
+  );
+
+  EncoderVelocityTracker velocityTrackerLeft = new EncoderVelocityTracker(this::getRawAngleLeft);
+  EncoderVelocityTracker velocityTrackerRight = new EncoderVelocityTracker(this::getRawAngleRight);
 
   /** Creates a new AlgaeManipulator. */
   public AlgaeManipulator() {
-    
+
   }
   
-  public double getRawAngle() {
-    return tiltEncoder.get() * 360;
+  public double getRawAngleLeft() {
+    return leftTiltEncoder.get() * 360;
   }
 
-  public double getAngle() {
-    return arm.getAngle();
+  public double getRawAngleRight() {
+    return rightTiltEncoder.get() * 360;
   }
 
-  public double getAngularVelocity() {
-    return velocityTracker.getVelocity();
+  public double getAngleLeft() {
+    return armLeft.getAngle();
+  }
+  
+  public double getAngleRight() {
+    return armRight.getAngle();
   }
 
-  public void setProfiled(double setpoint) {
-    arm.setProfiled(setpoint); 
+  public double getAngularVelocityLeft() {
+    return velocityTrackerLeft.getVelocity();
   }
 
-  public boolean atSetPoint() {
-    return arm.atSetpoint();
+  public double getAngularVelocityRight() {
+    return velocityTrackerRight.getVelocity();
   }
 
-  public AngleControlState getState() {
-    return arm.getState();
+  public boolean atSetPointLeft() {
+    return armLeft.atSetpoint();
+  }
+
+  public boolean atSetPointRight() {
+    return armLeft.atSetpoint();
+  }
+
+  public boolean getSetpointLeft() {
+    return armLeft.atSetpoint();
+  }
+
+  public boolean getSetpointRight() {
+    return armRight.atSetpoint();
+  }
+
+  public AngleControlState getStateLeft() {
+    return armLeft.getState();
+  }
+
+  public AngleControlState getStateRight() {
+    return armRight.getState();
   }
 
   public void enable() {
-    arm.enable();
+    armLeft.enable();
+    armRight.enable();
   }
 
   public void disable() {
-    arm.disable();
+    armLeft.disable();
+    armRight.disable();
+  }
+
+  public void enableInakeMotor() {
+    centralIntakeMotor.set(ControlMode.PercentOutput, AlgaeManipulatorConstants.INTAKE_MOTOR_SPEED_PERCENT);
+  }
+
+  public boolean isLoaded() {
+    return !irSensor.get();
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Tilt Encoder (Algae Arms): ", getRawAngle());
+    SmartDashboard.putNumber("Tilt Encoder (Algae Arm Left): ", getRawAngleLeft());
+    SmartDashboard.putNumber("Tilt Encoder (Algae Arm Right): ", getRawAngleRight());
 
     //Update velocity computation
-    velocityTracker.update();
+    velocityTrackerLeft.update();
+    velocityTrackerRight.update();
   }
 }

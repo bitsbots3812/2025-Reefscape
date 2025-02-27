@@ -53,6 +53,16 @@ public class ConstraintClasses {
           else {
             return LOWER_CONSTRAINT;
           }
+          
+        }
+
+        /**
+         * 
+         * @param value
+         * @return Retruns true if value is within the constrained range.
+         */
+        public boolean inRange(double value) {
+          return (value <= UPPER_CONSTRAINT) && (value >= LOWER_CONSTRAINT);
         }
       }
 }

@@ -49,9 +49,6 @@ public class Elevator extends SubsystemBase {
     };
   }
 
-  /*private SparkMax elevator = new SparkMax(ElevatorConstants.ELEVATOR_MOTOR_ID, MotorType.kBrushless);
-  private RelativeEncoder elevatorRelativeEncoder = elevator.getEncoder();
-  private SparkMaxConfig config = new SparkMaxConfig();*/
   private VictorSPX elevatorMotorLeft = new VictorSPX(ElevatorConstants.LEFT_ELEVATOR_MOTOR_ID);
   private VictorSPX elevatorMotorRight = new VictorSPX(ElevatorConstants.RIGHT_ELEVATOR_MOTOR_ID);
   private Encoder elevatorEncoder = new Encoder(ElevatorConstants.ENCODER_CHANNEL_A, ElevatorConstants.ENCODER_CHANNAL_B);
@@ -221,13 +218,13 @@ public class Elevator extends SubsystemBase {
     //Stall Detection:
     //If the elevator is not moving, is not at its setpoint, and the motor is using a current over STALL_THRESHOLD_AMPS, 
     //assume the elevator is stuck and possibly zeroed improperly. Disable elevator control.
-    if (currentState != ElevatorState.HOMING && atVelocity(0) && 
+   /* if (currentState != ElevatorState.HOMING && atVelocity(0) && 
         !atSetpoint() && elevator.getOutputCurrent() >= ElevatorConstants.STALL_THRESHOLD_AMPS) {
 
       disable();
       stallDetectedAlert.set(true);
 
-    }
+    }*/
 
   }
 }

@@ -108,7 +108,7 @@ public class Constants {
     
         //System Constants
         public static final double ELEVATOR_MAX_HEIGHT_M = Units.inchesToMeters(26.5);
-    
+        
         public static final double ELEVATOR_ALLOWED_ACCEL_MSS = 1.0;
         public static final double MOTOR_GEAR_RATIO = 26.0;
         public static final double PINION_GEAR_DIAMETER_M = Units.inchesToMeters(3);
@@ -121,10 +121,12 @@ public class Constants {
 
     public static final class AlgaeManipulatorConstants {
         //Ports
-        public static final int CENTRAL_TILT_MOTOR_ID = 2364839; //thats a placeholder
+        public static final int LEFT_TILT_MOTOR_ID = 2364839; //Numbers below are placeholders
+        public static final int RIGHT_TILT_MOTOR_ID = 2364839;
         public static final int CENTRAL_INTAKE_MOTOR_ID = 2364839;
 
-        public static final int ENCODER_CHANNEL = 0; // not sure yet
+        public static final int LEFT_ENCODER_CHANNEL = 0;
+        public static final int RIGHT_ENCODER_CHANNEL = 0;
 
         public static final int DIGITALINPUT_ID = 2364839;
 
@@ -147,6 +149,9 @@ public class Constants {
         public static final double MAX_ANGULAR_VELOCITY = 0;
         public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 0;
 
+        //Motorsettings
+        public static final double INTAKE_MOTOR_SPEED_PERCENT = 0.5;
+
         //Angle Unit
         public static final AngleUnit angleUnit = AngleUnit.DEGREES;
     }
@@ -154,14 +159,14 @@ public class Constants {
     public static final class CoralManipulatorConstants {
         //Ports
         public static final int TILT_MOTOR_ID = 2025; //any values are placeholders FYI
-        public static final int INTAKE_MOTOR_ID_A = 2025;
-        public static final int INTAKE_MOTOR_ID_B = 2025;
+        public static final int INTAKE_MOTOR_ID_LEFT = 2025;
+        public static final int INTAKE_MOTOR_ID_RIGHT = 2025;
 
         public static final int ENCODER_CHANNEL = 2025;
         //PID contoller consts
-        public static final int PID_A = 0;
-        public static final int PID_B = 0;
-        public static final int PID_C = 0;
+        public static final int PID_P = 0;
+        public static final int PID_I = 0;
+        public static final int PID_D = 0;
         //Angle Information
         public static final double ABSOLUTE_ENCODER_OFFSET = 0;
         public static final double ANGLE_SETPOINT_TOLERANCE = 0;

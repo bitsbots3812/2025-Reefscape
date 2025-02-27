@@ -22,11 +22,11 @@ import frc.robot.common.ArmController.AngleControlState;
 import frc.robot.common.EncoderVelocityTracker;
 
 public class CoralManipulator extends SubsystemBase {
-  
+
   //Initializing hardware & other stuff
   private VictorSPX centralTiltMotor = new VictorSPX(CoralManipulatorConstants.TILT_MOTOR_ID);
-  private VictorSPX intakeMotorA = new VictorSPX(CoralManipulatorConstants.INTAKE_MOTOR_ID_A);
-  private VictorSPX intakeMotorB = new VictorSPX(CoralManipulatorConstants.INTAKE_MOTOR_ID_B);
+  private VictorSPX intakeMotorLeft = new VictorSPX(CoralManipulatorConstants.INTAKE_MOTOR_ID_LEFT);
+  private VictorSPX intakeMotorRight = new VictorSPX(CoralManipulatorConstants.INTAKE_MOTOR_ID_RIGHT);
   private DutyCycleEncoder tiltEncoder = new DutyCycleEncoder(CoralManipulatorConstants.ENCODER_CHANNEL);
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 coralColorSensor = new ColorSensorV3(i2cPort);
@@ -48,9 +48,9 @@ public class CoralManipulator extends SubsystemBase {
     CoralManipulatorConstants.allowedAngleRange,
     
     //PID Gains
-    CoralManipulatorConstants.PID_A,
-    CoralManipulatorConstants.PID_B,
-    CoralManipulatorConstants.PID_C,
+    CoralManipulatorConstants.PID_P,
+    CoralManipulatorConstants.PID_I,
+    CoralManipulatorConstants.PID_D,
 
     //Feedforward Gains
     CoralManipulatorConstants.FF_KS,
@@ -72,6 +72,8 @@ public class CoralManipulator extends SubsystemBase {
 
   /** Creates a new CoralManipulator. */
   public CoralManipulator() {
+
+    coralColorMatcher.addColorMatch(kWhiteTarget);
     
   }
   
@@ -80,13 +82,13 @@ public class CoralManipulator extends SubsystemBase {
   }
 
   public void setIntake(double bothMotorSpeed) {
-    intakeMotorA.set(ControlMode.PercentOutput, bothMotorSpeed);
-    intakeMotorB.set(ControlMode.PercentOutput, bothMotorSpeed);
+    intakeMotorLeft.set(ControlMode.PercentOutput, bothMotorSpeed);
+    intakeMotorRight.set(ControlMode.PercentOutput, bothMotorSpeed);
   }
 
   public void setIntake(double leftSpeed, double rightSpeed) {
-    intakeMotorA.set(ControlMode.PercentOutput, leftSpeed);
-    intakeMotorB.set(ControlMode.PercentOutput, rightSpeed);
+    intakeMotorLeft.set(ControlMode.PercentOutput, leftSpeed);
+    intakeMotorRight.set(ControlMode.PercentOutput, rightSpeed);
   }
   
   public double getAngle() {
@@ -105,6 +107,10 @@ public class CoralManipulator extends SubsystemBase {
     return arm.atSetpoint();
   }
 
+  public double getSetpoint() {
+    return arm.getSetpoint();
+  }
+
   public AngleControlState getState() {
     return arm.getState();
   }
@@ -116,13 +122,6 @@ public class CoralManipulator extends SubsystemBase {
   public void disable() {
     arm.disable();
   }
-
-  public void setDetectedColor() {
-    coralColorMatcher.addColorMatch(kWhiteTarget);
-  }
-
-  //stall detection:
-  if () {}
 
   @Override
   public void periodic() {
