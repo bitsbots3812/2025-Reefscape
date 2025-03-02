@@ -115,6 +115,10 @@ public class CoralManipulator extends SubsystemBase {
     return arm.getState();
   }
 
+  public void setPoint(double setpoint) {
+    arm.setAngle(setpoint);
+  }
+
   public void enable() {
     arm.enable();
   }

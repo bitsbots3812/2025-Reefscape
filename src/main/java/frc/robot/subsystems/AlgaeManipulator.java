@@ -135,12 +135,19 @@ public class AlgaeManipulator extends SubsystemBase {
     return armLeft.atSetpoint();
   }
 
-  public boolean getSetpointLeft() {
-    return armLeft.atSetpoint();
+  public void setPointLeft(double setpoint) {
+    armLeft.setAngle(setpoint);
   }
 
-  public boolean getSetpointRight() {
-    return armRight.atSetpoint();
+  public void setPointRight(double setpoint) {
+    armRight.setAngle(setpoint);
+  }
+  public double getSetpointLeft() {
+    return armLeft.getAngle();
+  }
+
+  public double getSetpointRight() {
+    return armRight.getAngle();
   }
 
   public AngleControlState getStateLeft() {
@@ -161,12 +168,20 @@ public class AlgaeManipulator extends SubsystemBase {
     armRight.disable();
   }
 
-  public void enableInakeMotor() {
-    centralIntakeMotor.set(ControlMode.PercentOutput, AlgaeManipulatorConstants.INTAKE_MOTOR_SPEED_PERCENT);
+  public void setIntakeMotor(Double speed) {
+    centralIntakeMotor.set(ControlMode.PercentOutput, speed);
   }
 
   public boolean isLoaded() {
     return !irSensor.get();
+  }
+
+  public void setProfiledLeft(double setpoint) {
+    armLeft.setProfiled(setpoint);
+  }
+
+  public void setProfiledRight(double setpoint) {
+    armRight.setProfiled(setpoint);
   }
 
   @Override

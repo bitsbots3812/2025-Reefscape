@@ -81,4 +81,4 @@ Driver:
   - Coral drop (possibly same button as above)
   - Algae auto-intake
   - Algae drop (possible same button as above)
-  - Switch Robot
+  - Switch Robot direction
