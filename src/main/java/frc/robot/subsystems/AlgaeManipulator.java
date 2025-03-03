@@ -57,7 +57,7 @@ public class AlgaeManipulator extends SubsystemBase {
     AlgaeManipulatorConstants.MAX_PROFILED_ANGULAR_ACCELERATION,
 
     //Display Strings
-    "Algae Arm",
+    "Algae Arm Left",
 
     //Angle Unit Selection
     AlgaeManipulatorConstants.angleUnit
@@ -89,7 +89,7 @@ public class AlgaeManipulator extends SubsystemBase {
     AlgaeManipulatorConstants.MAX_PROFILED_ANGULAR_ACCELERATION,
 
     //Display Strings
-    "Algae Arm",
+    "Algae Arm Right",
 
     //Angle Unit Selection
     AlgaeManipulatorConstants.angleUnit
@@ -127,27 +127,22 @@ public class AlgaeManipulator extends SubsystemBase {
     return velocityTrackerRight.getVelocity();
   }
 
-  public boolean atSetPointLeft() {
-    return armLeft.atSetpoint();
+  public boolean atSetPoint() {
+    return armLeft.atSetpoint() && armRight.atSetpoint();
   }
 
-  public boolean atSetPointRight() {
-    return armLeft.atSetpoint();
-  }
-
-  public void setPointLeft(double setpoint) {
+  public void setPoint(double setpoint) {
     armLeft.setAngle(setpoint);
-  }
-
-  public void setPointRight(double setpoint) {
     armRight.setAngle(setpoint);
   }
-  public double getSetpointLeft() {
-    return armLeft.getAngle();
+
+  public void setProfiled(double setpoint) {
+    armLeft.setProfiled(setpoint);
+    armRight.setProfiled(setpoint);
   }
 
-  public double getSetpointRight() {
-    return armRight.getAngle();
+  public double getSetpoint() {
+    return armLeft.getSetpoint();
   }
 
   public AngleControlState getStateLeft() {
@@ -174,14 +169,6 @@ public class AlgaeManipulator extends SubsystemBase {
 
   public boolean isLoaded() {
     return !irSensor.get();
-  }
-
-  public void setProfiledLeft(double setpoint) {
-    armLeft.setProfiled(setpoint);
-  }
-
-  public void setProfiledRight(double setpoint) {
-    armRight.setProfiled(setpoint);
   }
 
   @Override

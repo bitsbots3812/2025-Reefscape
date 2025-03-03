@@ -24,8 +24,7 @@ public class SetAlgaeManipulator extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    algaeManipulator.setProfiledLeft(setpoint);
-    algaeManipulator.setProfiledRight(setpoint);
+    algaeManipulator.setProfiled(setpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -39,6 +38,6 @@ public class SetAlgaeManipulator extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return algaeManipulator.atSetPointLeft() && algaeManipulator.atSetPointRight();
+    return algaeManipulator.atSetPoint();
   }
 }

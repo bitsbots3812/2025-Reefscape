@@ -154,6 +154,9 @@ public class Constants {
 
         //Angle Unit
         public static final AngleUnit angleUnit = AngleUnit.DEGREES;
+
+        //Manual Control Rate
+        public static final double MANUAL_CONTROL_RATE_DEG_SEC = 40.0;
     }
 
     public static final class CoralManipulatorConstants {

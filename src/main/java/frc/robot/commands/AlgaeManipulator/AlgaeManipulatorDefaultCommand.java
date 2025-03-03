@@ -4,20 +4,14 @@
 
 package frc.robot.commands.AlgaeManipulator;
 
-import java.util.function.BooleanSupplier;
-import java.util.function.DoubleSupplier;
-
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants.AlgaeManipulatorConstants;
 import frc.robot.subsystems.AlgaeManipulator;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.Constants;
-import frc.robot.subsystems.AlgaeManipulator;
+import frc.robot.Constants.AlgaeManipulatorConstants;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlgaeManipulatorDefaultCommand extends Command {
@@ -25,6 +19,7 @@ public class AlgaeManipulatorDefaultCommand extends Command {
   DoubleSupplier angleControl;
   Trigger intake;
   AlgaeManipulator algaeManipulator;
+  Timer manualControlTimer;
 
   public AlgaeManipulatorDefaultCommand(DoubleSupplier angleControl, Trigger intake, AlgaeManipulator algaeManipulator) {
     // Use addRequirements() here to declare subsystem dependencies.
@@ -38,7 +33,7 @@ public class AlgaeManipulatorDefaultCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    
+    manualControlTimer.restart();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -52,8 +47,8 @@ public class AlgaeManipulatorDefaultCommand extends Command {
     }
 
     //Control Angle
-    algaeManipulator.setPointLeft(algaeManipulator.getSetpointLeft());
-    algaeManipulator.setPointRight(algaeManipulator.getSetpointRight());
+    algaeManipulator.setPoint(algaeManipulator.getSetpoint() + angleControl.getAsDouble() * AlgaeManipulatorConstants.MANUAL_CONTROL_RATE_DEG_SEC * manualControlTimer.get());
+    manualControlTimer.restart();
   }
 
   // Called once the command ends or is interrupted.
