@@ -4,26 +4,18 @@
 
 package frc.robot.commands.Elevator;
 
-import java.util.function.DoubleSupplier;
-
-import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
-import frc.robot.Constants.ElevatorConstants;
 import frc.robot.subsystems.Elevator;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
-public class ElevatorDefaultCommand extends Command {
-  DoubleSupplier heightControl;
-  Trigger intake;
-  Timer manualControlTimer;
+public class SetElevator extends Command {
+  /** Creates a new SetElevator. */
   Elevator elevator;
+  double setpoint; 
 
-  public ElevatorDefaultCommand(DoubleSupplier heightControl, Trigger intake, Elevator elevator) {
+  public SetElevator(double setpoint, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
-    this.heightControl = heightControl;
-    this.intake = intake;
+    this.setpoint = setpoint;
     this.elevator = elevator;
 
     addRequirements(elevator);
@@ -32,17 +24,12 @@ public class ElevatorDefaultCommand extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    manualControlTimer.restart();
+    elevator.setProfiled(setpoint);
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {
-
-    //Control Angle
-    elevator.setPosition(elevator.getSetpoint() + heightControl.getAsDouble() * ElevatorConstants.MANUAL_CONTROL_RATE_METER_SEC * manualControlTimer.get());
-    manualControlTimer.restart();
-  }
+  public void execute() {}
 
   // Called once the command ends or is interrupted.
   @Override

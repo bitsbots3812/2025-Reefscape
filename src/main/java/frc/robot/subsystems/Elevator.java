@@ -36,7 +36,7 @@ import com.ctre.phoenix.motorcontrol.can.*;
 
 public class Elevator extends SubsystemBase {
 
-  enum ElevatorState {
+  public enum ElevatorState {
     DISABLED("Disabled"),
     POSITION_CONTROL("Position Control"),
     PROFILED_CONTROL("Profiled Control"),
@@ -151,6 +151,10 @@ public class Elevator extends SubsystemBase {
 
   public boolean isEnabled() {
     return currentState == ElevatorState.POSITION_CONTROL || currentState == ElevatorState.PROFILED_CONTROL;
+  }
+
+  public double getSetpoint() {
+    return setPoint;
   }
 
   public boolean atSetpoint() {

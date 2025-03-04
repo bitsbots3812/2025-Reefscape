@@ -103,6 +103,9 @@ public class Constants {
         public static final double PID_D = 0.0;
     
         public static final double SETPOINT_TOLERANCE = 0.01; //1 cm
+
+        //Manual Control Rate
+        public static final double MANUAL_CONTROL_RATE_METER_SEC = 0.5;
     
         //FeedForward Controller Constants
     
@@ -181,12 +184,16 @@ public class Constants {
         //Motion profile constraints
         public static final double MAX_ANGULAR_VELOCITY = 0;
         public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 0;
-        //Angle Unit
-        public static final AngleUnit angleUnit = AngleUnit.DEGREES;
         //Color sensor 
         public static final int redVal = 255;
         public static final int greenVal = 255;
         public static final int blueVal = 255;
+        //Motorsettings
+        public static final double INTAKE_MOTOR_SPEED_PERCENT = 0.5;
+        //Angle Unit
+        public static final AngleUnit angleUnit = AngleUnit.DEGREES;
+        //Manual Control Rate
+        public static final double MANUAL_CONTROL_RATE_DEG_SEC = 40.0;
     }
 
     public static final class PDPConstants {
