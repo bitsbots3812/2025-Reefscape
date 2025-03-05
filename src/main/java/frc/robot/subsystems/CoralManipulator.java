@@ -137,10 +137,14 @@ public class CoralManipulator extends SubsystemBase {
     arm.disable();
   }
 
+  public boolean isLoaded() {
+    return coralColorSensor.getProximity() >= CoralManipulatorConstants.SENSOR_PROXIMITY_THRESHOLD;
+  }
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Tilt Encoder (Coral Manipulator): ", getRawAngle());
+    SmartDashboard.putBoolean("Coral Manipulator Loaded: ", isLoaded());
 
     //Update velocity computation
     velocityTracker.update();

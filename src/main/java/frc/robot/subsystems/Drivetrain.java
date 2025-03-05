@@ -26,6 +26,7 @@ import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
 import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 
@@ -145,6 +146,11 @@ public class Drivetrain extends SubsystemBase {
 
   @Override
   public void periodic() {
+
+    SmartDashboard.putNumber("Gyro Rotation: ", gyro.getRotation2d().getDegrees());
+    SmartDashboard.putNumber("Odometry X Distance (m): ", getPose().getX());
+    SmartDashboard.putNumber("Odometry Y Distance (m): ", getPose().getY());
+
     //Update Odometry
     odometry.update(gyro.getRotation2d(), leftEncoder.getPosition(), rightEncoder.getPosition());
   }

@@ -14,8 +14,22 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class DriverStationLEDSubsystem extends SubsystemBase {
   /** Creates a new DriverStationLEDSubsystem. */
 
-  IntegerArrayPublisher color;
-  StringPublisher pattern;
+  public enum LEDEffect {
+
+    SOLID("solid"),
+    BLINK("blink"),
+    FAST_BLINK("fst_blink");
+
+
+    String name;
+    
+    LEDEffect(String name) {
+      this.name = name;
+    }
+  }
+
+  private IntegerArrayPublisher color;
+  private StringPublisher pattern;
 
   public DriverStationLEDSubsystem() {
     color = NetworkTableInstance.getDefault().getIntegerArrayTopic("color").publish();
@@ -24,6 +38,10 @@ public class DriverStationLEDSubsystem extends SubsystemBase {
 
   public void setColor(byte r, byte g, byte b) {
     color.set(new long[] {r, g, b});
+  }
+
+  public void setEffect(LEDEffect effect) {
+    pattern.set(effect.name);
   }
 
   @Override

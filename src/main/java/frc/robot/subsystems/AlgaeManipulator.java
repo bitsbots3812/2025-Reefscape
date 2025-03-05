@@ -186,8 +186,7 @@ public class AlgaeManipulator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putNumber("Tilt Encoder (Algae Arm Left): ", getRawAngleLeft());
-    SmartDashboard.putNumber("Tilt Encoder (Algae Arm Right): ", getRawAngleRight());
+    SmartDashboard.putBoolean("Algae Manipulator Loaded: ", isLoaded());
 
     //Update velocity computation
     velocityTrackerLeft.update();

@@ -216,6 +216,9 @@ public class Constants {
         public static final int redVal = 255;
         public static final int greenVal = 255;
         public static final int blueVal = 255;
+
+        public static final int SENSOR_PROXIMITY_THRESHOLD = 500;
+
         //Angle Unit
         public static final AngleUnit angleUnit = AngleUnit.DEGREES;
         //Manual Control Rate
