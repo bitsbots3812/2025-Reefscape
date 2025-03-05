@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 import com.revrobotics.ColorMatch;
 import com.revrobotics.ColorSensorV3;
@@ -72,6 +73,15 @@ public class CoralManipulator extends SubsystemBase {
 
   /** Creates a new CoralManipulator. */
   public CoralManipulator() {
+
+    centralTiltMotor.setInverted(CoralManipulatorConstants.TILT_MOTOR_INVERTED);
+    centralTiltMotor.setNeutralMode(NeutralMode.Brake);
+    intakeMotorLeft.setInverted(CoralManipulatorConstants.INTAKE_MOTOR_LEFT_INVERTED);
+    intakeMotorLeft.setNeutralMode(NeutralMode.Brake);
+    intakeMotorRight.setInverted(CoralManipulatorConstants.INTAKE_MOTOR_RIGHT_INVERTED);
+    intakeMotorRight.setNeutralMode(NeutralMode.Brake);
+
+    tiltEncoder.setInverted(CoralManipulatorConstants.ENCODER_INVERTED);
 
     coralColorMatcher.addColorMatch(kWhiteTarget);
     

@@ -17,14 +17,16 @@ import frc.robot.Constants.AlgaeManipulatorConstants;
 public class AlgaeManipulatorDefaultCommand extends Command {
   /** Creates a new AlgaeManipulatorDefaultCommand. */
   DoubleSupplier angleControl;
-  Trigger intake;
+  Trigger intakeIn;
+  Trigger intakeOut;
   AlgaeManipulator algaeManipulator;
   Timer manualControlTimer;
 
-  public AlgaeManipulatorDefaultCommand(DoubleSupplier angleControl, Trigger intake, AlgaeManipulator algaeManipulator) {
+  public AlgaeManipulatorDefaultCommand(DoubleSupplier angleControl, Trigger intakeIn, Trigger intakeOut, AlgaeManipulator algaeManipulator) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.angleControl = angleControl;
-    this.intake = intake;
+    this.intakeIn = intakeIn;
+    this.intakeOut = intakeOut;
     this.algaeManipulator = algaeManipulator;
 
     addRequirements(algaeManipulator);
@@ -39,8 +41,11 @@ public class AlgaeManipulatorDefaultCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (intake.getAsBoolean()) {
-      algaeManipulator.setIntakeMotor(Constants.AlgaeManipulatorConstants.INTAKE_MOTOR_SPEED_PERCENT);
+    if (intakeIn.getAsBoolean()) {
+      algaeManipulator.setIntakeMotor(Constants.AlgaeManipulatorConstants.DEFAULT_INTAKE_IN_SPEED);
+    }
+    else if (intakeOut.getAsBoolean()) {
+      algaeManipulator.setIntakeMotor(Constants.AlgaeManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED);
     }
     else {
       algaeManipulator.setIntakeMotor(0.0);

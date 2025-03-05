@@ -92,15 +92,18 @@ public class Constants {
         public static final double AUTOHOME_WAIT_TIME_SEC = 0.5;
     
         //Setpoints
-        public static final double SETPOINT_1 = Units.inchesToMeters(5);
-        public static final double SETPOINT_2 = Units.inchesToMeters(15);
-        public static final double SETPOINT_3 = Units.inchesToMeters(26);
+        public static final double SETPOINT_L2 = Units.inchesToMeters(15);
+        public static final double SETPOINT_L3 = Units.inchesToMeters(26);
+        public static final double SETPOINT_STATION = Units.inchesToMeters(10);
         public static final double SETPOINT_HOME = 0;
     
         //PID Controller Constants
-        public static final double PID_P = 12.0;
+        public static final double PID_P = 5;
         public static final double PID_I = 0.0;
         public static final double PID_D = 0.0;
+
+        //Feed forward controller constatns
+        public static final double FF_KG = 0.1;
     
         public static final double SETPOINT_TOLERANCE = 0.01; //1 cm
 
@@ -110,7 +113,7 @@ public class Constants {
         //FeedForward Controller Constants
     
         //System Constants
-        public static final double ELEVATOR_MAX_HEIGHT_M = Units.inchesToMeters(26.5);
+        public static final double ELEVATOR_MAX_HEIGHT_M = Units.inchesToMeters(20);
         
         public static final double ELEVATOR_ALLOWED_ACCEL_MSS = 1.0;
         public static final double MOTOR_GEAR_RATIO = 26.0;
@@ -133,6 +136,13 @@ public class Constants {
 
         public static final int DIGITALINPUT_ID = 2364839;
 
+        //Inversions
+        public static final boolean LEFT_TILT_MOTOR_INVERTED = false;
+        public static final boolean RIGHT_TILT_MOTOR_INVERTED = true;
+        public static final boolean LEFT_TILT_ENCODER_INVERTED = false;
+        public static final boolean RIGHT_TILT_ENCODER_INVERTED = false;
+        public static final boolean INTAKE_MOTOR_INVERTED = false;
+
         //PID Controller Constants
         public static final double PID_P = 0.01;
         public static final double PID_I = 0;
@@ -143,6 +153,11 @@ public class Constants {
         public static final double ANGLE_SETPOINT_TOLERANCE = 0;
         public static final RangeConstraint allowedAngleRange = new RangeConstraint(0, 90);
 
+        //Setpoints
+        public static final double SETPOINT_HOME_DEG = 90;
+        public static final double SETPOINT_INTAKE_DEG = 45;
+        public static final double SETPOINT_CLIMB_DEG = 3;
+
         //Feedforward Gains
         public static final double FF_KS = 0;
         public static final double FF_KG = 0;
@@ -152,14 +167,13 @@ public class Constants {
         public static final double MAX_ANGULAR_VELOCITY = 0;
         public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 0;
 
-        //Motorsettings
-        public static final double INTAKE_MOTOR_SPEED_PERCENT = 0.5;
-
         //Angle Unit
         public static final AngleUnit angleUnit = AngleUnit.DEGREES;
 
         //Manual Control Rate
         public static final double MANUAL_CONTROL_RATE_DEG_SEC = 40.0;
+        public static final double DEFAULT_INTAKE_OUT_SPEED = 0.5;
+        public static final double DEFAULT_INTAKE_IN_SPEED = -0.5;
     }
 
     public static final class CoralManipulatorConstants {
@@ -169,6 +183,13 @@ public class Constants {
         public static final int INTAKE_MOTOR_ID_RIGHT = 2025;
 
         public static final int ENCODER_CHANNEL = 2025;
+
+        //inversions
+        public static final boolean TILT_MOTOR_INVERTED = false;
+        public static final boolean INTAKE_MOTOR_LEFT_INVERTED = false;
+        public static final boolean INTAKE_MOTOR_RIGHT_INVERTED = false;
+        public static final boolean ENCODER_INVERTED = false;
+
         //PID contoller consts
         public static final int PID_P = 0;
         public static final int PID_I = 0;
@@ -177,6 +198,13 @@ public class Constants {
         public static final double ABSOLUTE_ENCODER_OFFSET = 0;
         public static final double ANGLE_SETPOINT_TOLERANCE = 0;
         public static final RangeConstraint allowedAngleRange = new RangeConstraint(-10, 90);
+
+        //Setpoints
+        public static final double SETPOINT_TROUGH_DEG = -10.0;
+        public static final double SETPOINT_REEF_DEG = 0.0;
+        public static final double SETPOINT_HOME_DEG = 90.0;
+        public static final double SETPOINT_STATION_DEG = 30.0;
+
         //FeedForward gains
         public static final double FF_KS = 0;
         public static final double FF_KG = 0;
@@ -188,12 +216,19 @@ public class Constants {
         public static final int redVal = 255;
         public static final int greenVal = 255;
         public static final int blueVal = 255;
-        //Motorsettings
-        public static final double INTAKE_MOTOR_SPEED_PERCENT = 0.5;
         //Angle Unit
         public static final AngleUnit angleUnit = AngleUnit.DEGREES;
         //Manual Control Rate
         public static final double MANUAL_CONTROL_RATE_DEG_SEC = 40.0;
+        public static final double DEFAULT_INTAKE_OUT_SPEED = 0.5;
+        public static final double DEFAULT_INTAKE_IN_SPEED = -0.5;
+    }
+
+    public static final class ClimberConstants {
+        public static final int MOTOR_ID = 99;
+        public static final boolean MOTOR_INVERTED = false;
+        public static final double DEFAULT_SPEED = 1.0;
+        public static final int LIMIT_SWITCH_PORT = 99;
     }
 
     public static final class PDPConstants {

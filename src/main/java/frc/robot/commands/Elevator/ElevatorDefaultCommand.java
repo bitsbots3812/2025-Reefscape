@@ -16,14 +16,12 @@ import frc.robot.subsystems.Elevator;
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class ElevatorDefaultCommand extends Command {
   DoubleSupplier heightControl;
-  Trigger intake;
   Timer manualControlTimer;
   Elevator elevator;
 
-  public ElevatorDefaultCommand(DoubleSupplier heightControl, Trigger intake, Elevator elevator) {
+  public ElevatorDefaultCommand(DoubleSupplier heightControl, Elevator elevator) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.heightControl = heightControl;
-    this.intake = intake;
     this.elevator = elevator;
 
     addRequirements(elevator);

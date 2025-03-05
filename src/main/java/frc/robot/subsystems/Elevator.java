@@ -62,7 +62,7 @@ public class Elevator extends SubsystemBase {
     ElevatorConstants.PID_D
   );
 
-  private ElevatorFeedforward elevatorFF = new ElevatorFeedforward(0, 0,0,0);
+  private ElevatorFeedforward elevatorFF = new ElevatorFeedforward(0, ElevatorConstants.FF_KG,0,0);
 
   private TrapezoidProfile motionProfile = new TrapezoidProfile(new Constraints(ElevatorConstants.ELEVATOR_MAX_SPEED_MS, ElevatorConstants.ELEVATOR_ALLOWED_ACCEL_MSS));
   private TrapezoidProfile.State currentInitialState = null;

@@ -4,6 +4,7 @@
 
 package frc.robot.commands.Drivetrain;
 
+import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj2.command.Command;
@@ -16,11 +17,13 @@ public class DefaultDrive extends Command {
   private Drivetrain drivetrain;
   private DoubleSupplier xSpeed; 
   private DoubleSupplier zRotation;
+  private BooleanSupplier driveReversed;
 
-  public DefaultDrive(Drivetrain drivetrain, DoubleSupplier xSpeed, DoubleSupplier zRotation) {
+  public DefaultDrive(Drivetrain drivetrain, DoubleSupplier xSpeed, DoubleSupplier zRotation, BooleanSupplier driveReversed) {
     this.drivetrain = drivetrain;
     this.xSpeed = xSpeed;
     this.zRotation = zRotation;
+    this.driveReversed = driveReversed;
     addRequirements(drivetrain);
   }
 
@@ -33,7 +36,10 @@ public class DefaultDrive extends Command {
   @Override
   public void execute() {
 
-    drivetrain.drive(xSpeed.getAsDouble(), zRotation.getAsDouble());
+    if (driveReversed.getAsBoolean())
+      drivetrain.drive(-xSpeed.getAsDouble(), zRotation.getAsDouble());
+    else
+      drivetrain.drive(xSpeed.getAsDouble(), zRotation.getAsDouble());
 
   }
 

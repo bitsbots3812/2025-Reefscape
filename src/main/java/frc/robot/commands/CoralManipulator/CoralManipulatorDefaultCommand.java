@@ -17,14 +17,16 @@ import frc.robot.subsystems.CoralManipulator;
 public class CoralManipulatorDefaultCommand extends Command {
    /** Creates a new CoralManipulatorDefaultCommand. */
    DoubleSupplier angleControl;
-   Trigger intake;
+   Trigger intakeIn;
+   Trigger intakeOut;
    CoralManipulator coralManipulator;
    Timer manualControlTimer;
 
-  public CoralManipulatorDefaultCommand(DoubleSupplier angleControl, Trigger intake, CoralManipulator coralManipulator) {
+  public CoralManipulatorDefaultCommand(DoubleSupplier angleControl, Trigger intakeIn, Trigger intakeOut, CoralManipulator coralManipulator) {
     // Use addRequirements() here to declare subsystem dependencies.
     this.angleControl = angleControl;
-    this.intake = intake;
+    this.intakeIn = intakeIn;
+    this.intakeOut = intakeOut;
     this.coralManipulator = coralManipulator;
 
     addRequirements(coralManipulator);
@@ -39,8 +41,11 @@ public class CoralManipulatorDefaultCommand extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
-    if (intake.getAsBoolean()) {
-      coralManipulator.setIntake(Constants.CoralManipulatorConstants.INTAKE_MOTOR_SPEED_PERCENT);
+    if (intakeIn.getAsBoolean()) {
+      coralManipulator.setIntake(CoralManipulatorConstants.DEFAULT_INTAKE_IN_SPEED);
+    }
+    else if (intakeOut.getAsBoolean()) {
+      coralManipulator.setIntake(CoralManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED);
     }
     else {
       coralManipulator.setIntake(0.0);

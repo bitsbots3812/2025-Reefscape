@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -100,6 +101,17 @@ public class AlgaeManipulator extends SubsystemBase {
 
   /** Creates a new AlgaeManipulator. */
   public AlgaeManipulator() {
+
+    leftTiltMotor     .setInverted(AlgaeManipulatorConstants.LEFT_TILT_MOTOR_INVERTED);
+    rightTiltMotor    .setInverted(AlgaeManipulatorConstants.RIGHT_TILT_MOTOR_INVERTED);
+    centralIntakeMotor.setInverted(AlgaeManipulatorConstants.INTAKE_MOTOR_INVERTED);
+
+    leftTiltMotor     .setNeutralMode(NeutralMode.Brake);
+    rightTiltMotor    .setNeutralMode(NeutralMode.Brake);
+    centralIntakeMotor.setNeutralMode(NeutralMode.Brake);
+
+    leftTiltEncoder.setInverted(AlgaeManipulatorConstants.LEFT_TILT_ENCODER_INVERTED);
+    rightTiltEncoder.setInverted(AlgaeManipulatorConstants.RIGHT_TILT_ENCODER_INVERTED);
 
   }
   
