@@ -8,9 +8,15 @@ import org.photonvision.PhotonCamera;
 import org.photonvision.targeting.PhotonPipelineResult;
 
 import edu.wpi.first.math.geometry.Transform3d;
+import edu.wpi.first.wpilibj.Servo;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants.VisionSubsystemConstants;
 
 public class VisionSubsystem extends SubsystemBase {
+
+  Servo frontCameraServo = new Servo(VisionSubsystemConstants.FRONT_CAMERA_SERVO_PORT);
+
+  double currentServoPosition;
 
   public enum VisionPipeline {
     APRILTAG(0),
@@ -27,20 +33,33 @@ public class VisionSubsystem extends SubsystemBase {
   private PhotonCamera rearCam = new PhotonCamera("rearCam");
 
   /** Creates a new VisionSubsystem. */
-  public VisionSubsystem() {}
+  public VisionSubsystem() {
+    setFrontCameraServo(VisionSubsystemConstants.LOW_CAMERA_ANGLE);
+  }
 
   public void setRearCamPipeline(VisionPipeline pipeline) {
     rearCam.setPipelineIndex(pipeline.id);
   }
 
-  public double rearCamGetAngleToTarget() {
+  public double rearCamGetAngleToTarget(double defaultValue) {
     PhotonPipelineResult result = rearCam.getLatestResult();
     
     if (result.hasTargets()) {
       return result.getBestTarget().yaw;
     }
     else {
-      return 0;
+      return defaultValue;
+    }
+  }
+
+  public double frontCamGetAngleToTarget(double defaultValue) {
+    PhotonPipelineResult result = rearCam.getLatestResult();
+
+    if (result.hasTargets()) {
+      return result.getBestTarget().yaw;
+    }
+    else {
+      return defaultValue;
     }
   }
 
@@ -53,6 +72,14 @@ public class VisionSubsystem extends SubsystemBase {
     else {
       return null;
     }
+
+  }
+
+  public void setFrontCameraServo(double setpoint) {
+
+    currentServoPosition = setpoint;
+
+    frontCameraServo.set(setpoint / 180.0);
 
   }
 

@@ -27,12 +27,14 @@ import frc.robot.Constants.ClimberConstants;
 import frc.robot.Constants.CoralManipulatorConstants;
 import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PDPConstants;
+import frc.robot.Constants.VisionSubsystemConstants;
 import frc.robot.commands.SetCoralManipulatorAndElevator;
 import frc.robot.commands.AlgaeManipulator.AlgaeManipulatorDefaultCommand;
 import frc.robot.commands.AlgaeManipulator.SetAlgaeManipulator;
 import frc.robot.commands.CoralManipulator.CoralManipulatorDefaultCommand;
 import frc.robot.commands.CoralManipulator.SetCoralManipulator;
 import frc.robot.commands.Drivetrain.DefaultDrive;
+import frc.robot.commands.Drivetrain.SteerToTarget;
 import frc.robot.commands.Elevator.ElevatorDefaultCommand;
 import frc.robot.commands.Elevator.SetElevator;
 import frc.robot.common.AxisSupplier;
@@ -110,6 +112,7 @@ public class RobotContainer {
     configureAutoCommands();
 
     leds.setColor((byte)255, (byte)255, (byte)255);
+    SmartDashboard.putString("Maipulator Mode: ", RobotMode.CORAL.displayName);
   }
 
   private void configureBindings() {
@@ -134,7 +137,70 @@ public class RobotContainer {
       new InstantCommand(() -> algaeManipulator.setIntakeMotor(AlgaeManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED), algaeManipulator).repeatedly()
       .finallyDo(() -> algaeManipulator.setIntakeMotor(0.0)));
 
+    //Move Front Camera
+    stick.povUp().onTrue(new InstantCommand(() -> vision.setFrontCameraServo(VisionSubsystemConstants.HIGH_CAMERA_ANGLE)));
+    stick.povDown().onTrue(new InstantCommand(() -> vision.setFrontCameraServo(VisionSubsystemConstants.LOW_CAMERA_ANGLE)));
 
+    //Automatic Target Tracking 
+    //Left Offset
+    stick.button(3).whileTrue(
+      new SequentialCommandGroup(
+        new InstantCommand(() -> vision.setFrontCameraServo(VisionSubsystemConstants.LOW_CAMERA_ANGLE)),
+        new SteerToTarget(
+          new AxisSupplier(stick::getY, 2.0, 0.01, true),
+          () -> {return drivingReversed;}, 
+          VisionSubsystemConstants.REEF_OFFSET_ANGLE_LEFT,
+          () -> vision.frontCamGetAngleToTarget(VisionSubsystemConstants.REEF_OFFSET_ANGLE_LEFT), 
+          0.05, 0.0005, 
+          driveTrain
+        )
+      )
+    );
+
+    //Right Offset
+    stick.button(4).whileTrue(
+      new SequentialCommandGroup(
+        new InstantCommand(() -> vision.setFrontCameraServo(VisionSubsystemConstants.LOW_CAMERA_ANGLE)),
+        new SteerToTarget(
+          new AxisSupplier(stick::getY, 2.0, 0.01, true),
+          () -> {return drivingReversed;}, 
+          VisionSubsystemConstants.REEF_OFFSET_ANGLE_RIGHT,
+          () -> vision.frontCamGetAngleToTarget(VisionSubsystemConstants.REEF_OFFSET_ANGLE_RIGHT), 
+          0.05, 0.0005, 
+          driveTrain
+        )
+      )
+    );
+
+    //Center Offset Coral
+    stick.button(5).whileTrue(
+      new SequentialCommandGroup(
+        new InstantCommand(() -> vision.setFrontCameraServo(VisionSubsystemConstants.LOW_CAMERA_ANGLE)),
+        new SteerToTarget(
+          new AxisSupplier(stick::getY, 2.0, 0.01, true),
+          () -> {return drivingReversed;}, 
+          0,
+          () -> vision.frontCamGetAngleToTarget(0), 
+          0.05, 0.0005, 
+          driveTrain
+        )
+      )
+    );
+
+    //Algae
+    stick.button(3).whileTrue(
+      new SequentialCommandGroup(
+        new InstantCommand(() -> vision.setFrontCameraServo(VisionSubsystemConstants.LOW_CAMERA_ANGLE)),
+        new SteerToTarget(
+          new AxisSupplier(stick::getY, 2.0, 0.01, true),
+          () -> {return drivingReversed;}, 
+          VisionSubsystemConstants.ALGAE_OFFSET_ANGLE,
+          () -> vision.rearCamGetAngleToTarget(VisionSubsystemConstants.ALGAE_OFFSET_ANGLE), 
+          0.05, 0.0005, 
+          driveTrain
+        )
+      )
+    );
     
     
     //Manipulator Binds
@@ -189,10 +255,12 @@ public class RobotContainer {
         if (currentMode == RobotMode.CORAL) {
           leds.setColor((byte)255, (byte)0, (byte)0);
           currentMode = RobotMode.ALGAE;
+          SmartDashboard.putString("Maipulator Mode: ", RobotMode.ALGAE.displayName);
         }
         else {
           leds.setColor((byte)255, (byte)255, (byte)255);
           currentMode = RobotMode.CORAL;
+          SmartDashboard.putString("Maipulator Mode: ", RobotMode.CORAL.displayName);
         }
       })
     );

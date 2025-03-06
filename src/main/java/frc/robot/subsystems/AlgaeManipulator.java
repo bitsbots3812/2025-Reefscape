@@ -39,7 +39,7 @@ public class AlgaeManipulator extends SubsystemBase {
     this::getAngularVelocityLeft,
 
     //Angle Information
-    AlgaeManipulatorConstants.ABSOLUTE_ENCODER_OFFSET,
+    AlgaeManipulatorConstants.LEFT_ABSOLUTE_ENCODER_OFFSET,
     AlgaeManipulatorConstants.ANGLE_SETPOINT_TOLERANCE,
     AlgaeManipulatorConstants.allowedAngleRange,
     
@@ -71,7 +71,7 @@ public class AlgaeManipulator extends SubsystemBase {
     this::getAngularVelocityRight,
 
     //Angle Information
-    AlgaeManipulatorConstants.ABSOLUTE_ENCODER_OFFSET,
+    AlgaeManipulatorConstants.RIGHT_ABSOLUTE_ENCODER_OFFSET,
     AlgaeManipulatorConstants.ANGLE_SETPOINT_TOLERANCE,
     AlgaeManipulatorConstants.allowedAngleRange,
     

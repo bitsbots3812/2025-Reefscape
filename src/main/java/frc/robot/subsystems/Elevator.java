@@ -89,6 +89,7 @@ public class Elevator extends SubsystemBase {
     elevatorMotorRight.follow(elevatorMotorLeft);
     elevatorEncoder.setDistancePerPulse(ElevatorConstants.DISTANCE_PER_PULSE_M);
     elevatorEncoder.reset(); //Asume elevator is starting from the bottom
+    elevatorEncoder.setReverseDirection(ElevatorConstants.ENCODER_INVERT);
 
     this.getLeftMotorCurrentAmps  = getLeftMotorCurrentAmps;
     this.getRightMotorCurrentAmps = getRightMotorCurrentAmps;
