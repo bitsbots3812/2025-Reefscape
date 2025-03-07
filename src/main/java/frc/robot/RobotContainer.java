@@ -188,7 +188,7 @@ public class RobotContainer {
     );
 
     //Algae
-    stick.button(3).whileTrue(
+    stick.button(6).whileTrue(
       new SequentialCommandGroup(
         new InstantCommand(() -> vision.setFrontCameraServo(VisionSubsystemConstants.LOW_CAMERA_ANGLE)),
         new SteerToTarget(
