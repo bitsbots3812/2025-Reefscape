@@ -121,7 +121,7 @@ public class Constants {
         //Angle Information
         public static final double RIGHT_ABSOLUTE_ENCODER_OFFSET = 157.4;
         public static final double LEFT_ABSOLUTE_ENCODER_OFFSET = 145.7;
-        public static final double ANGLE_SETPOINT_TOLERANCE = 0;
+        public static final double ANGLE_SETPOINT_TOLERANCE = 3;
         public static final RangeConstraint allowedAngleRange = new RangeConstraint(2, 90);
 
         //Setpoints
@@ -135,8 +135,8 @@ public class Constants {
         public static final double FF_KV = 0;
 
         //Motion profile constraints
-        public static final double MAX_ANGULAR_VELOCITY = 0;
-        public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 0;
+        public static final double MAX_ANGULAR_VELOCITY = 50;
+        public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 50;
 
         //Angle Unit
         public static final AngleUnit angleUnit = AngleUnit.DEGREES;
@@ -150,26 +150,26 @@ public class Constants {
     //TOOD: Change IDs and Enter Inversions and Offsets for this subsystem
     public static final class CoralManipulatorConstants {
         //Ports
-        public static final int TILT_MOTOR_ID = 16; //any values are placeholders FYI (not anymore)
-        public static final int INTAKE_MOTOR_ID_LEFT = 13;
-        public static final int INTAKE_MOTOR_ID_RIGHT = 14;
+        public static final int TILT_MOTOR_ID = 15;
+        public static final int INTAKE_MOTOR_ID_LEFT = 5;
+        public static final int INTAKE_MOTOR_ID_RIGHT = 13;
 
         public static final int ENCODER_CHANNEL = 0;
 
         //inversions
-        public static final boolean TILT_MOTOR_INVERTED = false;
+        public static final boolean TILT_MOTOR_INVERTED = true;
         public static final boolean INTAKE_MOTOR_LEFT_INVERTED = false;
-        public static final boolean INTAKE_MOTOR_RIGHT_INVERTED = false;
+        public static final boolean INTAKE_MOTOR_RIGHT_INVERTED = true;
         public static final boolean ENCODER_INVERTED = false;
 
         //PID contoller consts
-        public static final int PID_P = 0;
-        public static final int PID_I = 0;
-        public static final int PID_D = 0;
+        public static final double PID_P = 0.01;
+        public static final double PID_I = 0;
+        public static final double PID_D = 0;
         //Angle Information
-        public static final double ABSOLUTE_ENCODER_OFFSET = 0;
-        public static final double ANGLE_SETPOINT_TOLERANCE = 0;
-        public static final RangeConstraint allowedAngleRange = new RangeConstraint(-10, 90);
+        public static final double ABSOLUTE_ENCODER_OFFSET = 75.5;
+        public static final double ANGLE_SETPOINT_TOLERANCE = 1;
+        public static final RangeConstraint allowedAngleRange = new RangeConstraint(-15, 90);
 
         //Setpoints
         public static final double SETPOINT_TROUGH_DEG = -10.0;
@@ -182,8 +182,8 @@ public class Constants {
         public static final double FF_KG = 0;
         public static final double FF_KV = 0;
         //Motion profile constraints
-        public static final double MAX_ANGULAR_VELOCITY = 0;
-        public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 0;
+        public static final double MAX_ANGULAR_VELOCITY = 50;
+        public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 50;
         //Color sensor 
         public static final int redVal = 255;
         public static final int greenVal = 255;
@@ -200,7 +200,7 @@ public class Constants {
     }
 
     public static final class ClimberConstants {
-        public static final int MOTOR_ID = 5;
+        public static final int MOTOR_ID = 2;
         public static final boolean MOTOR_INVERTED = false;
         public static final double DEFAULT_SPEED = 1.0;
         public static final int LIMIT_SWITCH_PORT = 3;
@@ -208,8 +208,8 @@ public class Constants {
 
     public static final class PDPConstants {
 
-        public static final int LEFT_ELEVATOR_MOTOR_PDP_PORT = 6;
-        public static final int RIGHT_ELEVATOR_MOTOR_PDP_PORT = 8;
+        public static final int LEFT_ELEVATOR_MOTOR_PDP_PORT = 10;
+        public static final int RIGHT_ELEVATOR_MOTOR_PDP_PORT = 11;
 
     }
 
