@@ -20,7 +20,7 @@ public class CoralManipulatorDefaultCommand extends Command {
    Trigger intakeIn;
    Trigger intakeOut;
    CoralManipulator coralManipulator;
-   Timer manualControlTimer;
+   Timer manualControlTimer = new Timer();
 
   public CoralManipulatorDefaultCommand(DoubleSupplier angleControl, Trigger intakeIn, Trigger intakeOut, CoralManipulator coralManipulator) {
     // Use addRequirements() here to declare subsystem dependencies.

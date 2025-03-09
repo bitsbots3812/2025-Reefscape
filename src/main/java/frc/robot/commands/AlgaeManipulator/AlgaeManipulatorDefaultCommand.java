@@ -20,7 +20,7 @@ public class AlgaeManipulatorDefaultCommand extends Command {
   Trigger intakeIn;
   Trigger intakeOut;
   AlgaeManipulator algaeManipulator;
-  Timer manualControlTimer;
+  Timer manualControlTimer = new Timer();
 
   public AlgaeManipulatorDefaultCommand(DoubleSupplier angleControl, Trigger intakeIn, Trigger intakeOut, AlgaeManipulator algaeManipulator) {
     // Use addRequirements() here to declare subsystem dependencies.

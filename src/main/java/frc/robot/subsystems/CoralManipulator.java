@@ -84,6 +84,9 @@ public class CoralManipulator extends SubsystemBase {
     tiltEncoder.setInverted(CoralManipulatorConstants.ENCODER_INVERTED);
 
     coralColorMatcher.addColorMatch(kWhiteTarget);
+
+    arm.enableDebugOutput(true);
+
     
   }
   
@@ -106,7 +109,8 @@ public class CoralManipulator extends SubsystemBase {
   }
 
   public double getAngularVelocity() {
-    return velocityTracker.getVelocity();
+    //return velocityTracker.getVelocity();
+    return 0;
   }
 
   public void setProfiled(double setpoint) {
@@ -145,8 +149,11 @@ public class CoralManipulator extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     SmartDashboard.putBoolean("Coral Manipulator Loaded: ", isLoaded());
+    //xSmartDashboard.putNumber("Coral Manipulator Color Sensor Proximity: ", coralColorSensor.getProximity());
 
     //Update velocity computation
-    velocityTracker.update();
+    //velocityTracker.update();
+
+    arm.execute();
   }
 }

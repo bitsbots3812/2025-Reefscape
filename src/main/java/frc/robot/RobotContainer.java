@@ -18,6 +18,7 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
+import edu.wpi.first.wpilibj2.command.ParallelRaceGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandJoystick;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
@@ -38,6 +39,7 @@ import frc.robot.commands.Drivetrain.SteerToTarget;
 import frc.robot.commands.Elevator.ElevatorDefaultCommand;
 import frc.robot.commands.Elevator.SetElevator;
 import frc.robot.common.AxisSupplier;
+import frc.robot.common.ArmController.AngleControlState;
 import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralManipulator;
@@ -76,7 +78,7 @@ public class RobotContainer {
     return new DoubleSupplier() {
       @Override
       public double getAsDouble() {
-          return currentMode == activeMode ? input.getAsDouble() : defaultValue;
+          return (currentMode == activeMode) ? input.getAsDouble() : defaultValue;
       }
     };
   }
@@ -88,7 +90,7 @@ public class RobotContainer {
   //Instantiate Subsystems
   //=======================================
   PDP pdp = new PDP();
-  AlgaeManipulator algaeManipulator = new AlgaeManipulator();
+  //AlgaeManipulator algaeManipulator = new AlgaeManipulator();
   CoralManipulator coralManipulator = new CoralManipulator();
   Elevator elevator = new Elevator(() -> pdp.getCurrent(PDPConstants.LEFT_ELEVATOR_MOTOR_PDP_PORT), () -> pdp.getCurrent(PDPConstants.RIGHT_ELEVATOR_MOTOR_PDP_PORT));
   Drivetrain driveTrain = new Drivetrain();
@@ -126,16 +128,21 @@ public class RobotContainer {
     );
 
     //swap modes
-    stick.button(2).onTrue(new InstantCommand(() -> {drivingReversed = !drivingReversed;}));
+    //stick.button(2).onTrue(new InstantCommand(() -> {drivingReversed = !drivingReversed;}));
+
+    //Drop into trough
+    stick.button(2).whileTrue(new InstantCommand(() -> coralManipulator.setIntake(CoralManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED, CoralManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED + 0.1))
+                                                    .repeatedly().finallyDo(() -> coralManipulator.setIntake(0)));
+
     
     //drop game pieces with trigger
-    ModalBind(stick.button(1), RobotMode.CORAL).whileTrue(
+    stick.button(1).whileTrue(
       new InstantCommand(() -> coralManipulator.setIntake(CoralManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED), coralManipulator).repeatedly()
       .finallyDo(() -> coralManipulator.setIntake(0)));
 
-    ModalBind(stick.button(1), RobotMode.ALGAE).whileTrue(
+    /*ModalBind(stick.button(1), RobotMode.ALGAE).whileTrue(
       new InstantCommand(() -> algaeManipulator.setIntakeMotor(AlgaeManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED), algaeManipulator).repeatedly()
-      .finallyDo(() -> algaeManipulator.setIntakeMotor(0.0)));
+      .finallyDo(() -> algaeManipulator.setIntakeMotor(0.0)));*/
 
     //Move Front Camera
     stick.povUp().onTrue(new InstantCommand(() -> vision.setFrontCameraServo(VisionSubsystemConstants.HIGH_CAMERA_ANGLE)));
@@ -205,52 +212,74 @@ public class RobotContainer {
     
     //Manipulator Binds
     //========================================================
-    algaeManipulator.setDefaultCommand(
+    /*algaeManipulator.setDefaultCommand(
       new AlgaeManipulatorDefaultCommand(ModalAnalogBind(new AxisSupplier(controller::getLeftY, 1, 0, true), RobotMode.ALGAE),
                                          ModalBind(controller.povDown(), RobotMode.ALGAE),
                                          ModalBind(controller.povUp(),  RobotMode.ALGAE),
                                          algaeManipulator
       )
-    );
+    );*/
+
+    /*algaeManipulator.setDefaultCommand(
+      new AlgaeManipulatorDefaultCommand(new AxisSupplier(controller::getLeftY, 1, 0, true),
+                                         ModalBind(controller.povDown(), RobotMode.ALGAE),
+                                         ModalBind(controller.povUp(),  RobotMode.ALGAE),
+                                         algaeManipulator
+      )
+    );*/
 
     coralManipulator.setDefaultCommand(
-      new CoralManipulatorDefaultCommand(ModalAnalogBind(new AxisSupplier(controller::getLeftY, 1, 0, true), RobotMode.ALGAE),
-                                         ModalBind(controller.povRight(), RobotMode.CORAL), 
-                                         ModalBind(controller.povLeft(),  RobotMode.CORAL),
+      new CoralManipulatorDefaultCommand(new AxisSupplier(controller::getLeftY, 1, 0, true),
+                                         controller.povRight(), 
+                                         controller.povLeft(),
                                          coralManipulator
       )
     );
 
-    elevator.setDefaultCommand(new ElevatorDefaultCommand(ModalAnalogBind(new AxisSupplier(controller::getRightY, 1, 0, true), RobotMode.CORAL), elevator));
+    //Drop into trough by running intake wheels at different speeds
+    controller.povUp().whileTrue(new InstantCommand(() -> coralManipulator.setIntake(CoralManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED, CoralManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED + 0.1))
+                                                    .repeatedly().finallyDo(() -> coralManipulator.setIntake(0)));
+
+    elevator.setDefaultCommand(new ElevatorDefaultCommand(new AxisSupplier(controller::getRightY, 1, 0, true), elevator));
 
     //Elevator and Coral Manipulator Setpoints
     //Home
-    ModalBind(controller.a(), RobotMode.CORAL).onTrue(new SetCoralManipulatorAndElevator(CoralManipulatorConstants.SETPOINT_HOME_DEG, ElevatorConstants.SETPOINT_HOME, coralManipulator, elevator));
-    //Trough
-    ModalBind(controller.a(), RobotMode.CORAL).onTrue(new SetCoralManipulatorAndElevator(CoralManipulatorConstants.SETPOINT_TROUGH_DEG, ElevatorConstants.SETPOINT_HOME, coralManipulator, elevator));
+    controller.a().onTrue(new SetCoralManipulatorAndElevator(CoralManipulatorConstants.SETPOINT_HOME_DEG, ElevatorConstants.SETPOINT_HOME, coralManipulator, elevator));
+    //Trough 
+    controller.x().onTrue(new SetCoralManipulatorAndElevator(CoralManipulatorConstants.SETPOINT_TROUGH_DEG, ElevatorConstants.SETPOINT_TROUGH, coralManipulator, elevator));
     //L2
-    ModalBind(controller.a(), RobotMode.CORAL).onTrue(new SetCoralManipulatorAndElevator(CoralManipulatorConstants.SETPOINT_REEF_DEG, ElevatorConstants.SETPOINT_L2, coralManipulator, elevator));
+    controller.y().onTrue(new SetCoralManipulatorAndElevator(CoralManipulatorConstants.SETPOINT_REEF_DEG, ElevatorConstants.SETPOINT_L2, coralManipulator, elevator));
     //L3
-    ModalBind(controller.a(), RobotMode.CORAL).onTrue(new SetCoralManipulatorAndElevator(CoralManipulatorConstants.SETPOINT_REEF_DEG, ElevatorConstants.SETPOINT_L3, coralManipulator, elevator));
+    controller.b().onTrue(new SetCoralManipulatorAndElevator(CoralManipulatorConstants.SETPOINT_REEF_DEG, ElevatorConstants.SETPOINT_L3, coralManipulator, elevator));
     //Coral Station
-    ModalBind(controller.a(), RobotMode.CORAL).onTrue(new SetCoralManipulatorAndElevator(CoralManipulatorConstants.SETPOINT_STATION_DEG, ElevatorConstants.SETPOINT_STATION, coralManipulator, elevator));
+    controller.rightBumper().onTrue(new SetCoralManipulatorAndElevator(CoralManipulatorConstants.SETPOINT_STATION_DEG, ElevatorConstants.SETPOINT_STATION, coralManipulator, elevator));
 
 
-    //Algae Manipulator Setpoints
+    /*//Algae Manipulator Setpoints
     //Home
     ModalBind(controller.y(), RobotMode.ALGAE).onTrue(new SetAlgaeManipulator(AlgaeManipulatorConstants.SETPOINT_HOME_DEG,   algaeManipulator));
     //Algae Position
     ModalBind(controller.x(), RobotMode.ALGAE).onTrue(new SetAlgaeManipulator(AlgaeManipulatorConstants.SETPOINT_INTAKE_DEG, algaeManipulator));
     //Climb Position
-    ModalBind(controller.a(), RobotMode.ALGAE).onTrue(new SetAlgaeManipulator(AlgaeManipulatorConstants.SETPOINT_CLIMB_DEG,  algaeManipulator));
+    ModalBind(controller.a(), RobotMode.ALGAE).onTrue(new SetAlgaeManipulator(AlgaeManipulatorConstants.SETPOINT_CLIMB_DEG,  algaeManipulator));*/
 
 
     //run climber
-    controller.leftTrigger().whileTrue(new InstantCommand(() -> climber.set(ClimberConstants.DEFAULT_SPEED)).finallyDo(() -> climber.set(0)));
+    controller.leftTrigger().whileTrue(new InstantCommand(() -> climber.set(ClimberConstants.DEFAULT_SPEED)).repeatedly().finallyDo(() -> climber.set(0)));
+
+    //toggle coral manipulator control
+    controller.back().onTrue(new InstantCommand(() -> {
+      if (coralManipulator.getState() == AngleControlState.DISABLED) {
+        coralManipulator.enable();
+      }
+      else {
+        coralManipulator.disable();
+      }
+    }));
 
 
     //swap modes
-    controller.leftBumper().onTrue(new InstantCommand(
+    /*controller.leftBumper().onTrue(new InstantCommand(
       () -> {
         if (currentMode == RobotMode.CORAL) {
           leds.setColor((byte)255, (byte)0, (byte)0);
@@ -263,7 +292,7 @@ public class RobotContainer {
           SmartDashboard.putString("Maipulator Mode: ", RobotMode.CORAL.displayName);
         }
       })
-    );
+    );*/
 
     //automated intake cycles
 
@@ -282,7 +311,7 @@ public class RobotContainer {
       )
     );
 
-    SequentialCommandGroup algaeAutoIntakeCycle = 
+    /*SequentialCommandGroup algaeAutoIntakeCycle = 
     new SequentialCommandGroup(
       new SetAlgaeManipulator(AlgaeManipulatorConstants.SETPOINT_INTAKE_DEG, algaeManipulator),
       new InstantCommand(() -> algaeManipulator.setIntakeMotor(AlgaeManipulatorConstants.DEFAULT_INTAKE_IN_SPEED))
@@ -295,23 +324,23 @@ public class RobotContainer {
           leds.setEffect(LEDEffect.BLINK);
         }
       )
-    );
+    );*/
 
     //Bind automatic intake cycles
-    ModalBind(controller.rightTrigger(), RobotMode.CORAL).whileTrue(coralAutoIntakeCycle);
-    ModalBind(controller.rightTrigger(), RobotMode.ALGAE).whileTrue(algaeAutoIntakeCycle);
+    controller.rightTrigger().whileTrue(coralAutoIntakeCycle);
+    /*ModalBind(controller.rightTrigger(), RobotMode.ALGAE).whileTrue(algaeAutoIntakeCycle);*/
 
     
 
     controller.start().onTrue(new InstantCommand(elevator::autoHome, elevator).until(() -> {return elevator.getState() != Elevator.ElevatorState.HOMING;}));
     
     //Sensor state binds
-    new Trigger(algaeManipulator::isLoaded).onFalse(new InstantCommand(
+    /*new Trigger(algaeManipulator::isLoaded).onFalse(new InstantCommand(
       () -> {
         controller.setRumble(RumbleType.kBothRumble, 0);
         leds.setEffect(LEDEffect.SOLID);
       }
-    ));
+    ));*/
     new Trigger(coralManipulator::isLoaded).onFalse(new InstantCommand(
       () -> {
         controller.setRumble(RumbleType.kBothRumble, 0);
@@ -330,18 +359,25 @@ public class RobotContainer {
   }
 
   public void onEnable() {
-    algaeManipulator.enable();
+    //algaeManipulator.enable();
     coralManipulator.enable();
     elevator.enable();
   }
 
   public void onDisable() {
-    algaeManipulator.disable();
+    //algaeManipulator.disable();
     coralManipulator.disable();
     elevator.disable();
   }
 
   public Command getAutonomousCommand() {
-    return autoChooser.getSelected();
+    //return autoChooser.getSelected();
+    return new SequentialCommandGroup(
+      new ParallelRaceGroup(
+        new InstantCommand(() -> driveTrain.drive(0.5, 0)).repeatedly(),
+        Commands.waitSeconds(1.5)
+      ),
+      new InstantCommand(() -> driveTrain.drive(0, 0))
+    );
   }
 }

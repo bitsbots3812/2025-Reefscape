@@ -62,9 +62,10 @@ public class Constants {
         public static final double AUTOHOME_WAIT_TIME_SEC = 0.5;
     
         //Setpoints
-        public static final double SETPOINT_L2 = Units.inchesToMeters(15);
-        public static final double SETPOINT_L3 = Units.inchesToMeters(24);
-        public static final double SETPOINT_STATION = Units.inchesToMeters(10);
+        public static final double SETPOINT_L2 = Units.inchesToMeters(16);
+        public static final double SETPOINT_L3 = Units.inchesToMeters(27);
+        public static final double SETPOINT_STATION = Units.inchesToMeters(12);
+        public static final double SETPOINT_TROUGH = Units.inchesToMeters(6);
         public static final double SETPOINT_HOME = 0;
     
         //PID Controller Constants
@@ -78,12 +79,12 @@ public class Constants {
         public static final double SETPOINT_TOLERANCE = 0.01; //1 cm
 
         //Manual Control Rate
-        public static final double MANUAL_CONTROL_RATE_METER_SEC = 0.5;
+        public static final double MANUAL_CONTROL_RATE_METER_SEC = 0.25;
     
         //FeedForward Controller Constants
     
         //System Constants
-        public static final double ELEVATOR_MAX_HEIGHT_M = Units.inchesToMeters(25);
+        public static final double ELEVATOR_MAX_HEIGHT_M = Units.inchesToMeters(27);
         
         public static final double ELEVATOR_ALLOWED_ACCEL_MSS = 1.0;
         public static final double MOTOR_GEAR_RATIO = 26.0;
@@ -91,7 +92,7 @@ public class Constants {
         public static final double ELEVATOR_MOTOR_RPS_MAX = 5700.0/60.0;
         public static final double ELEVATOR_MAX_SPEED_MS = (ELEVATOR_MOTOR_RPS_MAX / MOTOR_GEAR_RATIO) * PINION_GEAR_DIAMETER_M * Math.PI;
         //Converts the motor revolutions into meters of elevator travel:
-        public static final double DISTANCE_PER_PULSE_M = (PINION_GEAR_DIAMETER_M * Math.PI) / 8192.0;
+        public static final double DISTANCE_PER_PULSE_M = (PINION_GEAR_DIAMETER_M * Math.PI) / 2048;
       }
     
 
@@ -114,7 +115,7 @@ public class Constants {
         public static final boolean INTAKE_MOTOR_INVERTED = false;
 
         //PID Controller Constants
-        public static final double PID_P = 0.01;
+        public static final double PID_P = .25;
         public static final double PID_I = 0;
         public static final double PID_D = 0;
 
@@ -151,8 +152,8 @@ public class Constants {
     public static final class CoralManipulatorConstants {
         //Ports
         public static final int TILT_MOTOR_ID = 15;
-        public static final int INTAKE_MOTOR_ID_LEFT = 5;
-        public static final int INTAKE_MOTOR_ID_RIGHT = 13;
+        public static final int INTAKE_MOTOR_ID_LEFT = 6;
+        public static final int INTAKE_MOTOR_ID_RIGHT = 14;
 
         public static final int ENCODER_CHANNEL = 0;
 
@@ -163,12 +164,12 @@ public class Constants {
         public static final boolean ENCODER_INVERTED = false;
 
         //PID contoller consts
-        public static final double PID_P = 0.01;
-        public static final double PID_I = 0;
-        public static final double PID_D = 0;
+        public static final double PID_P = 0.03;
+        public static final double PID_I = 0.001;
+        public static final double PID_D = 0.0;
         //Angle Information
         public static final double ABSOLUTE_ENCODER_OFFSET = 75.5;
-        public static final double ANGLE_SETPOINT_TOLERANCE = 1;
+        public static final double ANGLE_SETPOINT_TOLERANCE = 5;
         public static final RangeConstraint allowedAngleRange = new RangeConstraint(-15, 90);
 
         //Setpoints
@@ -182,7 +183,7 @@ public class Constants {
         public static final double FF_KG = 0;
         public static final double FF_KV = 0;
         //Motion profile constraints
-        public static final double MAX_ANGULAR_VELOCITY = 50;
+        public static final double MAX_ANGULAR_VELOCITY = 70;
         public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 50;
         //Color sensor 
         public static final int redVal = 255;
@@ -217,8 +218,8 @@ public class Constants {
 
         public static final int FRONT_CAMERA_SERVO_PORT = 0;
         
-        public static final double HIGH_CAMERA_ANGLE = 70.0;
-        public static final double LOW_CAMERA_ANGLE = 10.0;
+        public static final double HIGH_CAMERA_ANGLE = 20.0;
+        public static final double LOW_CAMERA_ANGLE = 70.0;
 
         public static final double REEF_OFFSET_ANGLE_LEFT = 30.0;
         public static final double REEF_OFFSET_ANGLE_RIGHT = -30.0;

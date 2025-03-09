@@ -113,6 +113,9 @@ public class AlgaeManipulator extends SubsystemBase {
     leftTiltEncoder.setInverted(AlgaeManipulatorConstants.LEFT_TILT_ENCODER_INVERTED);
     rightTiltEncoder.setInverted(AlgaeManipulatorConstants.RIGHT_TILT_ENCODER_INVERTED);
 
+    armLeft.enableDebugOutput(true);
+    armRight.enableDebugOutput(true);
+
   }
   
   public double getRawAngleLeft() {
@@ -191,5 +194,8 @@ public class AlgaeManipulator extends SubsystemBase {
     //Update velocity computation
     velocityTrackerLeft.update();
     velocityTrackerRight.update();
+
+    armLeft.execute();
+    armRight.execute();
   }
 }

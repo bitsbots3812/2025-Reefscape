@@ -262,7 +262,6 @@ public class ArmController {
             SmartDashboard.putNumber(displayName + "  Angular Velocity (" + angleUnit.displayString + " per sec): ", getVelocity());
             SmartDashboard.putNumber(displayName + "  Angle Setpoint (" + angleUnit.displayString + "): ", setpoint);
             SmartDashboard.putBoolean(displayName + "  at Setpoint: ", atSetpoint());
-            //SmartDashboard.putNumber(displayName + "  Angle Motor Output Power: ", );
         }
 
         double pidOutput = 0;

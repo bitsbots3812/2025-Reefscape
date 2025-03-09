@@ -28,20 +28,9 @@ public class Climber extends SubsystemBase {
   }
 
   public void set(double speed) {
-    this.speed = MathUtil.clamp(speed, 0, 1);
+    motor.set(ControlMode.PercentOutput, MathUtil.clamp(speed, 0, 1));
   }
 
   @Override
-  public void periodic() {
-
-    SmartDashboard.putBoolean("Climber Limit Switch", limitSwitch.get());
-
-    // This method will be called once per scheduler run
-    if (!limitSwitch.get()) {
-      motor.set(ControlMode.PercentOutput, speed);
-    }
-    else {
-      motor.set(ControlMode.PercentOutput, 0);
-    }
-  }
+  public void periodic() {}
 }

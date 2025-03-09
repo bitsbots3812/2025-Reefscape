@@ -24,10 +24,7 @@ public class SetCoralManipulatorAndElevator extends ParallelCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new SetCoralManipulator(coralManipulatorSetpoint, coralManipulator),
-      new SequentialCommandGroup(
-        Commands.waitUntil(() -> coralManipulator.getAngle() >= 90 - CoralManipulatorConstants.ANGLE_SETPOINT_TOLERANCE),
-        new SetElevator(elevatorSetpoint, elevator)
-      )
+      new SetElevator(elevatorSetpoint, elevator)
     );
   }
 }
