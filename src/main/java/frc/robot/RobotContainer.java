@@ -30,8 +30,6 @@ import frc.robot.Constants.ElevatorConstants;
 import frc.robot.Constants.PDPConstants;
 import frc.robot.Constants.VisionSubsystemConstants;
 import frc.robot.commands.SetCoralManipulatorAndElevator;
-import frc.robot.commands.AlgaeManipulator.AlgaeManipulatorDefaultCommand;
-import frc.robot.commands.AlgaeManipulator.SetAlgaeManipulator;
 import frc.robot.commands.CoralManipulator.CoralManipulatorDefaultCommand;
 import frc.robot.commands.CoralManipulator.SetCoralManipulator;
 import frc.robot.commands.Drivetrain.DefaultDrive;
@@ -40,7 +38,6 @@ import frc.robot.commands.Elevator.ElevatorDefaultCommand;
 import frc.robot.commands.Elevator.SetElevator;
 import frc.robot.common.AxisSupplier;
 import frc.robot.common.ArmController.AngleControlState;
-import frc.robot.subsystems.AlgaeManipulator;
 import frc.robot.subsystems.Climber;
 import frc.robot.subsystems.CoralManipulator;
 import frc.robot.subsystems.DriverStationLEDSubsystem;
@@ -62,29 +59,6 @@ public class RobotContainer {
       this.displayName = displayName;
     }
     
-  }
-
-  RobotMode currentMode = RobotMode.CORAL;
-
-  //Modal Trigger / Supplier Factories
-  //=============================================================
-  Trigger ModalBind(BooleanSupplier input, RobotMode activeMode) {
-
-    return new Trigger(() -> {return input.getAsBoolean() && (activeMode == currentMode);});
-
-  }
-
-  DoubleSupplier ModalAnalogBind(DoubleSupplier input, RobotMode activeMode, double defaultValue) {
-    return new DoubleSupplier() {
-      @Override
-      public double getAsDouble() {
-          return (currentMode == activeMode) ? input.getAsDouble() : defaultValue;
-      }
-    };
-  }
-
-  DoubleSupplier ModalAnalogBind(DoubleSupplier input, RobotMode activeMode) {
-    return ModalAnalogBind(input, activeMode, 0);
   }
 
   //Instantiate Subsystems
@@ -128,7 +102,6 @@ public class RobotContainer {
     );
 
     //swap modes
-    //stick.button(2).onTrue(new InstantCommand(() -> {drivingReversed = !drivingReversed;}));
 
     //Drop into trough
     stick.button(2).whileTrue(new InstantCommand(() -> coralManipulator.setIntake(CoralManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED, CoralManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED + 0.1))
@@ -139,10 +112,6 @@ public class RobotContainer {
     stick.button(1).whileTrue(
       new InstantCommand(() -> coralManipulator.setIntake(CoralManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED), coralManipulator).repeatedly()
       .finallyDo(() -> coralManipulator.setIntake(0)));
-
-    /*ModalBind(stick.button(1), RobotMode.ALGAE).whileTrue(
-      new InstantCommand(() -> algaeManipulator.setIntakeMotor(AlgaeManipulatorConstants.DEFAULT_INTAKE_OUT_SPEED), algaeManipulator).repeatedly()
-      .finallyDo(() -> algaeManipulator.setIntakeMotor(0.0)));*/
 
     //Move Front Camera
     stick.povUp().onTrue(new InstantCommand(() -> vision.setFrontCameraServo(VisionSubsystemConstants.HIGH_CAMERA_ANGLE)));
@@ -211,23 +180,6 @@ public class RobotContainer {
     
     
     //Manipulator Binds
-    //========================================================
-    /*algaeManipulator.setDefaultCommand(
-      new AlgaeManipulatorDefaultCommand(ModalAnalogBind(new AxisSupplier(controller::getLeftY, 1, 0, true), RobotMode.ALGAE),
-                                         ModalBind(controller.povDown(), RobotMode.ALGAE),
-                                         ModalBind(controller.povUp(),  RobotMode.ALGAE),
-                                         algaeManipulator
-      )
-    );*/
-
-    /*algaeManipulator.setDefaultCommand(
-      new AlgaeManipulatorDefaultCommand(new AxisSupplier(controller::getLeftY, 1, 0, true),
-                                         ModalBind(controller.povDown(), RobotMode.ALGAE),
-                                         ModalBind(controller.povUp(),  RobotMode.ALGAE),
-                                         algaeManipulator
-      )
-    );*/
-
     coralManipulator.setDefaultCommand(
       new CoralManipulatorDefaultCommand(new AxisSupplier(controller::getLeftY, 1, 0, true),
                                          controller.povRight(), 
@@ -255,15 +207,6 @@ public class RobotContainer {
     controller.rightBumper().onTrue(new SetCoralManipulatorAndElevator(CoralManipulatorConstants.SETPOINT_STATION_DEG, ElevatorConstants.SETPOINT_STATION, coralManipulator, elevator));
 
 
-    /*//Algae Manipulator Setpoints
-    //Home
-    ModalBind(controller.y(), RobotMode.ALGAE).onTrue(new SetAlgaeManipulator(AlgaeManipulatorConstants.SETPOINT_HOME_DEG,   algaeManipulator));
-    //Algae Position
-    ModalBind(controller.x(), RobotMode.ALGAE).onTrue(new SetAlgaeManipulator(AlgaeManipulatorConstants.SETPOINT_INTAKE_DEG, algaeManipulator));
-    //Climb Position
-    ModalBind(controller.a(), RobotMode.ALGAE).onTrue(new SetAlgaeManipulator(AlgaeManipulatorConstants.SETPOINT_CLIMB_DEG,  algaeManipulator));*/
-
-
     //run climber
     controller.leftTrigger().whileTrue(new InstantCommand(() -> climber.set(ClimberConstants.DEFAULT_SPEED)).repeatedly().finallyDo(() -> climber.set(0)));
 
@@ -276,23 +219,6 @@ public class RobotContainer {
         coralManipulator.disable();
       }
     }));
-
-
-    //swap modes
-    /*controller.leftBumper().onTrue(new InstantCommand(
-      () -> {
-        if (currentMode == RobotMode.CORAL) {
-          leds.setColor((byte)255, (byte)0, (byte)0);
-          currentMode = RobotMode.ALGAE;
-          SmartDashboard.putString("Maipulator Mode: ", RobotMode.ALGAE.displayName);
-        }
-        else {
-          leds.setColor((byte)255, (byte)255, (byte)255);
-          currentMode = RobotMode.CORAL;
-          SmartDashboard.putString("Maipulator Mode: ", RobotMode.CORAL.displayName);
-        }
-      })
-    );*/
 
     //automated intake cycles
 
@@ -311,36 +237,12 @@ public class RobotContainer {
       )
     );
 
-    /*SequentialCommandGroup algaeAutoIntakeCycle = 
-    new SequentialCommandGroup(
-      new SetAlgaeManipulator(AlgaeManipulatorConstants.SETPOINT_INTAKE_DEG, algaeManipulator),
-      new InstantCommand(() -> algaeManipulator.setIntakeMotor(AlgaeManipulatorConstants.DEFAULT_INTAKE_IN_SPEED))
-                        .repeatedly()
-                        .until(algaeManipulator::isLoaded)
-                        .finallyDo(() -> algaeManipulator.setIntakeMotor(0.0)),
-      new InstantCommand(
-        () -> {
-          controller.setRumble(RumbleType.kBothRumble, 1);
-          leds.setEffect(LEDEffect.BLINK);
-        }
-      )
-    );*/
-
     //Bind automatic intake cycles
     controller.rightTrigger().whileTrue(coralAutoIntakeCycle);
-    /*ModalBind(controller.rightTrigger(), RobotMode.ALGAE).whileTrue(algaeAutoIntakeCycle);*/
-
-    
 
     controller.start().onTrue(new InstantCommand(elevator::autoHome, elevator).until(() -> {return elevator.getState() != Elevator.ElevatorState.HOMING;}));
     
     //Sensor state binds
-    /*new Trigger(algaeManipulator::isLoaded).onFalse(new InstantCommand(
-      () -> {
-        controller.setRumble(RumbleType.kBothRumble, 0);
-        leds.setEffect(LEDEffect.SOLID);
-      }
-    ));*/
     new Trigger(coralManipulator::isLoaded).onFalse(new InstantCommand(
       () -> {
         controller.setRumble(RumbleType.kBothRumble, 0);
@@ -359,25 +261,16 @@ public class RobotContainer {
   }
 
   public void onEnable() {
-    //algaeManipulator.enable();
     coralManipulator.enable();
     elevator.enable();
   }
 
   public void onDisable() {
-    //algaeManipulator.disable();
     coralManipulator.disable();
     elevator.disable();
   }
 
   public Command getAutonomousCommand() {
-    //return autoChooser.getSelected();
-    return new SequentialCommandGroup(
-      new ParallelRaceGroup(
-        new InstantCommand(() -> driveTrain.drive(0.5, 0)).repeatedly(),
-        Commands.waitSeconds(1.5)
-      ),
-      new InstantCommand(() -> driveTrain.drive(0, 0))
-    );
+    return autoChooser.getSelected();
   }
 }

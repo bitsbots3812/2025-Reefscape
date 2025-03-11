@@ -86,8 +86,6 @@ public class CoralManipulator extends SubsystemBase {
     coralColorMatcher.addColorMatch(kWhiteTarget);
 
     arm.enableDebugOutput(true);
-
-    
   }
   
   public double getRawAngle() {
@@ -109,8 +107,7 @@ public class CoralManipulator extends SubsystemBase {
   }
 
   public double getAngularVelocity() {
-    //return velocityTracker.getVelocity();
-    return 0;
+    return velocityTracker.getVelocity();
   }
 
   public void setProfiled(double setpoint) {

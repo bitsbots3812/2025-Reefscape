@@ -62,6 +62,8 @@ public class Constants {
         public static final double AUTOHOME_WAIT_TIME_SEC = 0.5;
     
         //Setpoints
+        public static final RangeConstraint SAFE_RANGE_M = new RangeConstraint(Units.inchesToMeters(10), Units.inchesToMeters(20)); //placeholder
+        
         public static final double SETPOINT_L2 = Units.inchesToMeters(16);
         public static final double SETPOINT_L3 = Units.inchesToMeters(27);
         public static final double SETPOINT_STATION = Units.inchesToMeters(12);
@@ -95,61 +97,50 @@ public class Constants {
         public static final double DISTANCE_PER_PULSE_M = (PINION_GEAR_DIAMETER_M * Math.PI) / 2048;
       }
     
-
-    public static final class AlgaeManipulatorConstants {
+    public static final class AlgaeRemoverConstants {
         //Ports
-        public static final int LEFT_TILT_MOTOR_ID = 5; //Numbers below are [no longer] placeholders
-        public static final int RIGHT_TILT_MOTOR_ID = 13;
-        public static final int CENTRAL_INTAKE_MOTOR_ID = 4;
+        public static final int MAIN_MOTOR_ID = 3812; //Numbers below are placeholders
 
-        public static final int LEFT_ENCODER_CHANNEL = 0;
-        public static final int RIGHT_ENCODER_CHANNEL = 1;
+        public static final int ANALOG_ENCODER_ID = 3812;
 
-        public static final int DIGITALINPUT_ID = 4;
+        public static final int DIGITALINPUT_ID = 3812;
 
         //Inversions
-        public static final boolean LEFT_TILT_MOTOR_INVERTED = false;
-        public static final boolean RIGHT_TILT_MOTOR_INVERTED = true;
-        public static final boolean LEFT_TILT_ENCODER_INVERTED = false;
-        public static final boolean RIGHT_TILT_ENCODER_INVERTED = true;
-        public static final boolean INTAKE_MOTOR_INVERTED = false;
+        public static final boolean MAIN_MOTOR_INVERTED = false;
 
         //PID Controller Constants
-        public static final double PID_P = .25;
-        public static final double PID_I = 0;
-        public static final double PID_D = 0;
+        public static final double PID_P = 3812;
+        public static final double PID_I = 3812;
+        public static final double PID_D = 3812;
 
         //Angle Information
-        public static final double RIGHT_ABSOLUTE_ENCODER_OFFSET = 157.4;
-        public static final double LEFT_ABSOLUTE_ENCODER_OFFSET = 145.7;
-        public static final double ANGLE_SETPOINT_TOLERANCE = 3;
-        public static final RangeConstraint allowedAngleRange = new RangeConstraint(2, 90);
+        public static final double ANALOG_ENCODER_OFFSET = 3812;
+        public static final double ANGLE_SETPOINT_TOLERANCE = 3812;
+        public static final RangeConstraint allowedAngleRange = new RangeConstraint(3812, 3812);
 
         //Setpoints
-        public static final double SETPOINT_HOME_DEG = 90;
-        public static final double SETPOINT_INTAKE_DEG = 45;
-        public static final double SETPOINT_CLIMB_DEG = 3;
+        public static final double SETPOINT_HOME_DEG = 3812;
+        public static final double SETPOINT_EXTENDED_DEG = 3812;
 
         //Feedforward Gains
-        public static final double FF_KS = 0.01;
+        public static final double FF_KS = 0;
         public static final double FF_KG = 0;
         public static final double FF_KV = 0;
 
         //Motion profile constraints
-        public static final double MAX_ANGULAR_VELOCITY = 50;
-        public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 50;
+        public static final double MAX_ANGULAR_VELOCITY = 3812;
+        public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 3812;
 
         //Angle Unit
         public static final AngleUnit angleUnit = AngleUnit.DEGREES;
 
         //Manual Control Rate
-        public static final double MANUAL_CONTROL_RATE_DEG_SEC = 40.0;
-        public static final double DEFAULT_INTAKE_OUT_SPEED = 1;
-        public static final double DEFAULT_INTAKE_IN_SPEED = -1;
+        public static final double MANUAL_CONTROL_RATE_DEG_SEC = 3812;
     }
 
     //TOOD: Change IDs and Enter Inversions and Offsets for this subsystem
     public static final class CoralManipulatorConstants {
+
         //Ports
         public static final int TILT_MOTOR_ID = 15;
         public static final int INTAKE_MOTOR_ID_LEFT = 6;
@@ -173,6 +164,7 @@ public class Constants {
         public static final RangeConstraint allowedAngleRange = new RangeConstraint(-15, 90);
 
         //Setpoints
+        public static final double SAFTEY_THRESHOLD_DEG = 90;
         public static final double SETPOINT_TROUGH_DEG = -10.0;
         public static final double SETPOINT_REEF_DEG = 0.0;
         public static final double SETPOINT_HOME_DEG = 90.0;
