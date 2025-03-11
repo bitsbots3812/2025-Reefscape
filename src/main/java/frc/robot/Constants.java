@@ -87,6 +87,7 @@ public class Constants {
     
         //System Constants
         public static final double ELEVATOR_MAX_HEIGHT_M = Units.inchesToMeters(27);
+        public static final double CROSSMEMBER_HEIGHT_M = Units.inchesToMeters(22);
         
         public static final double ELEVATOR_ALLOWED_ACCEL_MSS = 1.0;
         public static final double MOTOR_GEAR_RATIO = 26.0;
@@ -95,7 +96,7 @@ public class Constants {
         public static final double ELEVATOR_MAX_SPEED_MS = (ELEVATOR_MOTOR_RPS_MAX / MOTOR_GEAR_RATIO) * PINION_GEAR_DIAMETER_M * Math.PI;
         //Converts the motor revolutions into meters of elevator travel:
         public static final double DISTANCE_PER_PULSE_M = (PINION_GEAR_DIAMETER_M * Math.PI) / 2048;
-      }
+    }
     
     public static final class AlgaeRemoverConstants {
         //Ports
@@ -161,7 +162,7 @@ public class Constants {
         //Angle Information
         public static final double ABSOLUTE_ENCODER_OFFSET = 75.5;
         public static final double ANGLE_SETPOINT_TOLERANCE = 5;
-        public static final RangeConstraint allowedAngleRange = new RangeConstraint(-15, 90);
+        public static final RangeConstraint allowedAngleRange = new RangeConstraint(-15, 180);
 
         //Setpoints
         public static final double SAFTEY_THRESHOLD_DEG = 90;
@@ -182,7 +183,7 @@ public class Constants {
         public static final int greenVal = 255;
         public static final int blueVal = 255;
 
-        public static final int SENSOR_PROXIMITY_THRESHOLD = 500;
+        public static final int SENSOR_PROXIMITY_THRESHOLD = 120;
 
         //Angle Unit
         public static final AngleUnit angleUnit = AngleUnit.DEGREES;

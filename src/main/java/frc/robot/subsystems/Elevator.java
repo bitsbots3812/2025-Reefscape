@@ -134,6 +134,17 @@ public class Elevator extends SubsystemBase {
     this.setPoint = MathUtil.clamp(setPoint, 0, ElevatorConstants.ELEVATOR_MAX_HEIGHT_M);
   }
 
+  public void forceSetPosition(double setPoint) {
+
+    if (!isEnabled()) {
+      noOpSetAlert.set(true);
+      return;
+    }
+
+    currentState = ElevatorState.POSITION_CONTROL; //set elevator to postion control mode
+    this.setPoint = setPoint;
+  }
+
   public void autoHome() {
 
     currentState = ElevatorState.HOMING;

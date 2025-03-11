@@ -1,84 +1,11 @@
-Create Subsystems:
- - Coral Manipulator: ✔
-  - Tilt control ✔
-  - Intake wheels✔
-   - Allow Individual Control of each side to permit spinning the coral when
-     dropping into trough.✔
-  - Color Sensor ✔
-  - Tilt Limits ✔
-  - Stall Detection🔄(ON HOLD)
-  - Hardware:
-   - VictorSPX x 3
-    - 2 Intake Wheel Motors
-    - 1 Tilt Motors
-   - REV Through bore encoder
-    - Absolute mode (use DutyCycleEncoder)
-   - REV Color Sensor
-
- - Algae Manipulator:
-  - Tilt control - Independent PID on each side (no arm control class)✔
-  - Intake wheels control✔
-  - Proximity Sensor✔
-  - Hardware:
-   - VictorSPX x 3
-    - Intake Motor
-    - Tilt Motors x 2
-   - Analog Encoders (left and right)
-   - IR Proximity Sensor
-    - Same as on summer bot
-
-- Vision:
- - Provide information for drivetrain to steer toward a target (apiltag or game piece)
- - Hardware:
-  - Photonvision SBC
-  - Webcams
-
-- LED Control:
- - Put data on networktables to control DS LEDs
-
-Improve Subystems:
- - See comments in Subsystems🔄
-
-
-Create Commands:
- - Default Commands:
-   - Elevator:
-    - Move based on Axis
-   - Coral Manipulator:
-    - Move intake wheels from manipulator control
-    - Move based on axis
-   - Algae Manipulator
-    - Move intake wheels from manipulator control
-    - Move based on axis
- - Set Position of subsystems
-  - Elevator
-  - Coral Manipulator
-  - Algae Manipulator
-
- - Vision/Alignment Commands
-
- - Auotmated Coral Intake Sequence
- - Auotmated Algae Intake Sequence 
-
-
-REQUIRED CONTROLS:
-
-Manipulator:
- Axis Controls:
-  - Manual Elevator Move
-  - Manual Algae Manipulator arm Move
-  - Manual Coral Maniulator tilt
-
- Button Controls:
-  - Climber Up/Down
-  - Run Coral Intake
-  - Run Algae Intake
-  - Coral Arm and Elevator to Setpoints
-  - Algae arm toggle climb mode
-
-Driver:
-  - Coral autoIntake
-  - Coral drop (possibly same button as above)
-  - Algae auto-intake
-  - Algae drop (possible same button as above)
-  - Switch Robot direction
+- Add bindings for AlgaeRemover
+- Revise Default Command For Coral Manipulator and Elevator to have safetey restrictions
+- Add driver assistance for placement of coral
+- Fix loop overruns
+- Add autonomous that places coral
+- Test automatic intake cycle
+- Use command sequence factory for positioning of elevator and coral manipulator
+- Test Setpoints
+- Add button to override running commands for elevator and coral manipulator
+- Tune PIDs
+- Tune drivetrain
