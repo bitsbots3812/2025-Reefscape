@@ -5,17 +5,27 @@
 package frc.robot.commands.AlgaeRemover;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.subsystems.AlgaeRemover;
 
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class SetAlgaeRemover extends Command {
+
+  AlgaeRemover algaeRemover;
+  double setpoint;
+
   /** Creates a new SetAlgaeRemover. */
-  public SetAlgaeRemover() {
-    // Use addRequirements() here to declare subsystem dependencies.
+  public SetAlgaeRemover(double setpoint, AlgaeRemover algaeRemover) {
+    this.setpoint = setpoint;
+    this.algaeRemover = algaeRemover;
+
+    addRequirements(algaeRemover);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    algaeRemover.setPoint(setpoint);
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
@@ -28,6 +38,6 @@ public class SetAlgaeRemover extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    return algaeRemover.atSetPoint();
   }
 }

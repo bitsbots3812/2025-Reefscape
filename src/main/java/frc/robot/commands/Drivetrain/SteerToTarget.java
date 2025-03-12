@@ -8,6 +8,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.subsystems.Drivetrain;
 
@@ -47,11 +48,12 @@ public class SteerToTarget extends Command {
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+
     if (driveReversed.getAsBoolean()) {
-      drivetrain.drive(-xSpeed.getAsDouble(), pid.calculate(angle.getAsDouble(), angleSetpoint));
+      drivetrain.drive(-xSpeed.getAsDouble(), -pid.calculate(angle.getAsDouble(), angleSetpoint));
     }
     else {
-      drivetrain.drive(xSpeed.getAsDouble(), pid.calculate(angle.getAsDouble(), angleSetpoint));
+      drivetrain.drive(xSpeed.getAsDouble(), -pid.calculate(angle.getAsDouble(), angleSetpoint));
     }
   }
 

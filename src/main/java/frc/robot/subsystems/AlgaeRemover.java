@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.ctre.phoenix.motorcontrol.can.VictorSPX;
 
 import edu.wpi.first.wpilibj.AnalogEncoder;
@@ -45,11 +46,19 @@ public class AlgaeRemover extends SubsystemBase {
     AlgaeRemoverConstants.MAX_PROFILED_ANGULAR_ACCELERATION,
 
     //Display Strings
-    "Primary Weapon",
+    "Algae Kicker",
 
     //Angle Unit Selection
     AlgaeRemoverConstants.angleUnit
   );
+
+  /** Creates a new AlgaeRemover. */
+  public AlgaeRemover() {
+    mainMotor.setInverted(AlgaeRemoverConstants.MAIN_MOTOR_INVERTED);
+    mainMotor.setNeutralMode(NeutralMode.Brake);
+
+    mainAnalogEncoder.setInverted(AlgaeRemoverConstants.ENCODER_INVERTED);
+  }
 
   public double getRawAngle() {
     return mainAnalogEncoder.get() * 360;
@@ -86,9 +95,6 @@ public class AlgaeRemover extends SubsystemBase {
   public void disable() {
     arm.disable();
   }
-
-  /** Creates a new AlgaeRemover. */
-  public AlgaeRemover() {}
 
   @Override
   public void periodic() {

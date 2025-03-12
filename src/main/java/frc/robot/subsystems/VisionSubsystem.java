@@ -75,6 +75,19 @@ public class VisionSubsystem extends SubsystemBase {
 
   }
 
+  public double frontCamGetYDistToTarget(double defaultValue) {
+
+    PhotonPipelineResult result = frontCam.getLatestResult();
+
+    if (result.hasTargets()) {
+      return result.getBestTarget().getBestCameraToTarget().getY();
+    }
+    else {
+      return defaultValue;
+    }
+
+  }
+
   public void setFrontCameraServo(double setpoint) {
 
     currentServoPosition = setpoint;

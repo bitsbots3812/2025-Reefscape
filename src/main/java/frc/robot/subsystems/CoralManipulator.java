@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.AnalogEncoder;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.I2C;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj.util.Color;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -32,6 +33,18 @@ public class CoralManipulator extends SubsystemBase {
   private final I2C.Port i2cPort = I2C.Port.kOnboard;
   private final ColorSensorV3 coralColorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch coralColorMatcher = new ColorMatch();
+
+  Thread sensorUpdater = new Thread(
+    () -> {
+      Timer updateTimer = new Timer();
+      updateTimer.restart();
+      while (true) {
+        if (updateTimer.hasElapsed(0.2)) {
+          SmartDashboard.putBoolean("Coral Manipulator Loaded: ", isLoaded());
+        }
+      }
+    }
+  );
 
   private final Color kWhiteTarget = new Color(CoralManipulatorConstants.redVal, 
   CoralManipulatorConstants.greenVal, 
@@ -145,7 +158,6 @@ public class CoralManipulator extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    SmartDashboard.putBoolean("Coral Manipulator Loaded: ", isLoaded());
     //xSmartDashboard.putNumber("Coral Manipulator Color Sensor Proximity: ", coralColorSensor.getProximity());
 
     //Update velocity computation

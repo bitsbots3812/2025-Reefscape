@@ -4,34 +4,48 @@
 
 package frc.robot.commands.AlgaeRemover;
 
-import edu.wpi.first.wpilibj2.command.Command;
+import java.util.function.DoubleSupplier;
 
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
-import frc.robot.Constants;
 import frc.robot.Constants.AlgaeRemoverConstants;
 import frc.robot.subsystems.AlgaeRemover;
 
-
 /* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
 public class AlgaeRemoverDefaultCommand extends Command {
-  /** Creates a new AlgaeRemoverDefaultCommand. */
-  public AlgaeRemoverDefaultCommand() {
+   /** Creates a new AlgaeRemoverDefaultCommand. */
+   DoubleSupplier angleControl;
+   AlgaeRemover AlgaeRemover;
+   Timer manualControlTimer = new Timer();
+
+  public AlgaeRemoverDefaultCommand(DoubleSupplier angleControl, AlgaeRemover AlgaeRemover) {
     // Use addRequirements() here to declare subsystem dependencies.
+    this.angleControl = angleControl;
+    this.AlgaeRemover = AlgaeRemover;
+
+    addRequirements(AlgaeRemover);
   }
 
   // Called when the command is initially scheduled.
   @Override
-  public void initialize() {}
+  public void initialize() {
+    manualControlTimer.restart();
+  }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+
+    //Control Angle
+    AlgaeRemover.setPoint(AlgaeRemover.getSetpoint() + angleControl.getAsDouble() * AlgaeRemoverConstants.MANUAL_CONTROL_RATE_DEG_SEC * manualControlTimer.get());
+    manualControlTimer.restart();
+  }
 
   // Called once the command ends or is interrupted.
   @Override
-  public void end(boolean interrupted) {}
+  public void end(boolean interrupted) {
+    
+  }
 
   // Returns true when the command should end.
   @Override

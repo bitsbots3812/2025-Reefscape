@@ -1,11 +1,19 @@
-- Add bindings for AlgaeRemover
-- Revise Default Command For Coral Manipulator and Elevator to have safetey restrictions
-- Add driver assistance for placement of coral
-- Fix loop overruns
+- Revise Default Command For Coral Manipulator and Elevator to have safety restrictions
 - Add autonomous that places coral
-- Test automatic intake cycle
-- Use command sequence factory for positioning of elevator and coral manipulator
-- Test Setpoints
-- Add button to override running commands for elevator and coral manipulator
-- Tune PIDs
+- Add encoder disconnect detection to applicable subsystems
+- Fix DS LED Backend
+
+
+
 - Tune drivetrain
+- Test and refine Setpoints
+- Test automatic intake cycle - FIGURE OUT WHY WHEELS DO NOT SPIN WHEN CORAL MANIPULATOR STARTS FROM POSITION > 90 DEG
+- Fix loop overruns
+
+
+
+- Add bindings for AlgaeRemover - DONE!
+- Add driver assistance for placement of coral - DONE!
+- Use command sequence factory for positioning of elevator and coral manipulator - DONE!
+- Add button to override running commands for elevator and coral manipulator - DONE!
+- Tune PIDs - Mostly Done? - This is always ongoing.

@@ -5,7 +5,9 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Constants.CoralManipulatorConstants;
@@ -20,7 +22,7 @@ public class CoralandElevatorSetpointSequence {
 
     private CoralandElevatorSetpointSequence() {}
 
-    public static Command get(CoralManipulator coralManipulator, Elevator elevator, double coralManipulatorSetpoint, double elevatorSetpoint) {
+    private static Command get(double coralManipulatorSetpoint, double elevatorSetpoint, CoralManipulator coralManipulator, Elevator elevator) {
         
         SequentialCommandGroup sequence = new SequentialCommandGroup();
 
@@ -37,7 +39,7 @@ public class CoralandElevatorSetpointSequence {
         if (elevator.getSetpoint() >= (ElevatorConstants.CROSSMEMBER_HEIGHT_M) && coralManipulator.getSetpoint() > CoralManipulatorConstants.SAFTEY_THRESHOLD_DEG) {
             sequence.addCommands(new SetCoralManipulator(CoralManipulatorConstants.SAFTEY_THRESHOLD_DEG, coralManipulator));
         }
-        else if (elevator.getSetpoint() < (ElevatorConstants.CROSSMEMBER_HEIGHT_M) && coralManipulator.getSetpoint() > CoralManipulatorConstants.SAFTEY_THRESHOLD_DEG) {
+        else if ((elevator.getSetpoint() != 0) && coralManipulator.getSetpoint() > CoralManipulatorConstants.SAFTEY_THRESHOLD_DEG) {
             sequence.addCommands(new SetElevator(0, elevator));
         }
 
@@ -68,6 +70,14 @@ public class CoralandElevatorSetpointSequence {
 
         return sequence;
         
+    }
+
+    public static Command runSequence (double coralManipulatorSetpoint, double elevatorSetpoint, CoralManipulator coralManipulator, Elevator elevator) {
+        return new InstantCommand(
+            () -> {
+                CommandScheduler.getInstance().schedule(get(coralManipulatorSetpoint, elevatorSetpoint, coralManipulator, elevator));
+            }
+        );
     }
 
 }

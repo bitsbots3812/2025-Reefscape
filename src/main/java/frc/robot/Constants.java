@@ -65,20 +65,20 @@ public class Constants {
         public static final RangeConstraint SAFE_RANGE_M = new RangeConstraint(Units.inchesToMeters(10), Units.inchesToMeters(20)); //placeholder
         
         public static final double SETPOINT_L2 = Units.inchesToMeters(16);
-        public static final double SETPOINT_L3 = Units.inchesToMeters(27);
-        public static final double SETPOINT_STATION = Units.inchesToMeters(12);
+        public static final double SETPOINT_L3 = Units.inchesToMeters(26);
+        public static final double SETPOINT_STATION = Units.inchesToMeters(0);
         public static final double SETPOINT_TROUGH = Units.inchesToMeters(6);
         public static final double SETPOINT_HOME = 0;
     
         //PID Controller Constants
-        public static final double PID_P = 5;
-        public static final double PID_I = 0.0;
+        public static final double PID_P = 10;
+        public static final double PID_I = 0.01;
         public static final double PID_D = 0.0;
 
         //Feed forward controller constatns
-        public static final double FF_KG = 0.1;
+        public static final double FF_KG = 0.37;
     
-        public static final double SETPOINT_TOLERANCE = 0.01; //1 cm
+        public static final double SETPOINT_TOLERANCE = 0.02; //2 cm
 
         //Manual Control Rate
         public static final double MANUAL_CONTROL_RATE_METER_SEC = 0.25;
@@ -86,7 +86,7 @@ public class Constants {
         //FeedForward Controller Constants
     
         //System Constants
-        public static final double ELEVATOR_MAX_HEIGHT_M = Units.inchesToMeters(27);
+        public static final double ELEVATOR_MAX_HEIGHT_M = Units.inchesToMeters(26.25);
         public static final double CROSSMEMBER_HEIGHT_M = Units.inchesToMeters(22);
         
         public static final double ELEVATOR_ALLOWED_ACCEL_MSS = 1.0;
@@ -100,28 +100,28 @@ public class Constants {
     
     public static final class AlgaeRemoverConstants {
         //Ports
-        public static final int MAIN_MOTOR_ID = 3812; //Numbers below are placeholders
+        public static final int MAIN_MOTOR_ID = 2;
 
-        public static final int ANALOG_ENCODER_ID = 3812;
-
-        public static final int DIGITALINPUT_ID = 3812;
+        public static final int ANALOG_ENCODER_ID = 0;
 
         //Inversions
         public static final boolean MAIN_MOTOR_INVERTED = false;
+        public static final boolean ENCODER_INVERTED = false;
 
         //PID Controller Constants
-        public static final double PID_P = 3812;
-        public static final double PID_I = 3812;
-        public static final double PID_D = 3812;
+        public static final double PID_P = 0.02;
+        public static final double PID_I = 0.004;
+        public static final double PID_D = 0.0001;
 
         //Angle Information
-        public static final double ANALOG_ENCODER_OFFSET = 3812;
-        public static final double ANGLE_SETPOINT_TOLERANCE = 3812;
-        public static final RangeConstraint allowedAngleRange = new RangeConstraint(3812, 3812);
+        public static final double ANALOG_ENCODER_OFFSET = 100.5;
+        public static final double ANGLE_SETPOINT_TOLERANCE = 3;
+        public static final RangeConstraint allowedAngleRange = new RangeConstraint(-90, 30);
 
         //Setpoints
-        public static final double SETPOINT_HOME_DEG = 3812;
-        public static final double SETPOINT_EXTENDED_DEG = 3812;
+        public static final double SETPOINT_HOME_DEG = -90;
+        public static final double SETPOINT_READY_DEG = 0;
+        public static final double SETPOINT_ACTIVE_DEG = 30;
 
         //Feedforward Gains
         public static final double FF_KS = 0;
@@ -129,14 +129,14 @@ public class Constants {
         public static final double FF_KV = 0;
 
         //Motion profile constraints
-        public static final double MAX_ANGULAR_VELOCITY = 3812;
-        public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 3812;
+        public static final double MAX_ANGULAR_VELOCITY = 50;
+        public static final double MAX_PROFILED_ANGULAR_ACCELERATION = 50;
 
         //Angle Unit
         public static final AngleUnit angleUnit = AngleUnit.DEGREES;
 
         //Manual Control Rate
-        public static final double MANUAL_CONTROL_RATE_DEG_SEC = 3812;
+        public static final double MANUAL_CONTROL_RATE_DEG_SEC = 40;
     }
 
     //TOOD: Change IDs and Enter Inversions and Offsets for this subsystem
@@ -156,12 +156,12 @@ public class Constants {
         public static final boolean ENCODER_INVERTED = false;
 
         //PID contoller consts
-        public static final double PID_P = 0.03;
-        public static final double PID_I = 0.001;
-        public static final double PID_D = 0.0;
+        public static final double PID_P = 0.04;
+        public static final double PID_I = 0.002;
+        public static final double PID_D = 0;
         //Angle Information
         public static final double ABSOLUTE_ENCODER_OFFSET = 75.5;
-        public static final double ANGLE_SETPOINT_TOLERANCE = 5;
+        public static final double ANGLE_SETPOINT_TOLERANCE = 2;
         public static final RangeConstraint allowedAngleRange = new RangeConstraint(-15, 180);
 
         //Setpoints
@@ -169,7 +169,7 @@ public class Constants {
         public static final double SETPOINT_TROUGH_DEG = -10.0;
         public static final double SETPOINT_REEF_DEG = 0.0;
         public static final double SETPOINT_HOME_DEG = 90.0;
-        public static final double SETPOINT_STATION_DEG = 30.0;
+        public static final double SETPOINT_STATION_DEG = 150;
 
         //FeedForward gains
         public static final double FF_KS = 0;
@@ -193,13 +193,6 @@ public class Constants {
         public static final double DEFAULT_INTAKE_IN_SPEED = -0.5;
     }
 
-    public static final class ClimberConstants {
-        public static final int MOTOR_ID = 2;
-        public static final boolean MOTOR_INVERTED = false;
-        public static final double DEFAULT_SPEED = 1.0;
-        public static final int LIMIT_SWITCH_PORT = 3;
-    }
-
     public static final class PDPConstants {
 
         public static final int LEFT_ELEVATOR_MOTOR_PDP_PORT = 10;
@@ -212,10 +205,13 @@ public class Constants {
         public static final int FRONT_CAMERA_SERVO_PORT = 0;
         
         public static final double HIGH_CAMERA_ANGLE = 20.0;
-        public static final double LOW_CAMERA_ANGLE = 70.0;
+        public static final double LOW_CAMERA_ANGLE = 90;
 
         public static final double REEF_OFFSET_ANGLE_LEFT = 30.0;
         public static final double REEF_OFFSET_ANGLE_RIGHT = -30.0;
         public static final double ALGAE_OFFSET_ANGLE = 10.0;
+
+        public static final double REEF_OFFSET_LEFT_M = Units.inchesToMeters(-7);
+        public static final double REEF_OFFSET_RIGHT_M = Units.inchesToMeters(7);
     }
 }
