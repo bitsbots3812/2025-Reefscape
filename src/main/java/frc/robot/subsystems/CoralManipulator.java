@@ -34,13 +34,16 @@ public class CoralManipulator extends SubsystemBase {
   private final ColorSensorV3 coralColorSensor = new ColorSensorV3(i2cPort);
   private final ColorMatch coralColorMatcher = new ColorMatch();
 
+  boolean isLoaded = false;
+
   Thread sensorUpdater = new Thread(
     () -> {
       Timer updateTimer = new Timer();
       updateTimer.restart();
       while (true) {
         if (updateTimer.hasElapsed(0.2)) {
-          SmartDashboard.putBoolean("Coral Manipulator Loaded: ", isLoaded());
+          isLoaded = coralColorSensor.getProximity() >= CoralManipulatorConstants.SENSOR_PROXIMITY_THRESHOLD;
+          SmartDashboard.putBoolean("Coral Manipulator Loaded: ", isLoaded);
         }
       }
     }
@@ -82,6 +85,27 @@ public class CoralManipulator extends SubsystemBase {
     CoralManipulatorConstants.angleUnit
   );
 
+  //Thread to disable arm if encoder gets disconnected
+  Thread endocoderWatch = new Thread(
+    () -> {
+
+      Timer disconnectTimer = new Timer();
+      disconnectTimer.reset();
+
+      while (true) {
+        if (!tiltEncoder.isConnected()) {
+          disconnectTimer.start();
+          if (disconnectTimer.get() > 0.2) {
+            arm.disable();
+          }
+        }
+        else {
+          disconnectTimer.stop();
+        }
+      }
+    }
+  );
+
   EncoderVelocityTracker velocityTracker = new EncoderVelocityTracker(this::getRawAngle);
 
   /** Creates a new CoralManipulator. */
@@ -99,6 +123,9 @@ public class CoralManipulator extends SubsystemBase {
     coralColorMatcher.addColorMatch(kWhiteTarget);
 
     arm.enableDebugOutput(true);
+
+    sensorUpdater.start();
+    endocoderWatch.start();
   }
   
   public double getRawAngle() {
@@ -152,7 +179,7 @@ public class CoralManipulator extends SubsystemBase {
   }
 
   public boolean isLoaded() {
-    return coralColorSensor.getProximity() >= CoralManipulatorConstants.SENSOR_PROXIMITY_THRESHOLD;
+    return isLoaded;
   }
 
   @Override

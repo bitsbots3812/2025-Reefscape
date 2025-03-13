@@ -62,9 +62,9 @@ public class Constants {
         public static final double AUTOHOME_WAIT_TIME_SEC = 0.5;
     
         //Setpoints
-        public static final RangeConstraint SAFE_RANGE_M = new RangeConstraint(Units.inchesToMeters(10), Units.inchesToMeters(20)); //placeholder
+        public static final RangeConstraint SAFE_RANGE_M = new RangeConstraint(Units.inchesToMeters(5), Units.inchesToMeters(20)); //placeholder
         
-        public static final double SETPOINT_L2 = Units.inchesToMeters(16);
+        public static final double SETPOINT_L2 = Units.inchesToMeters(14);
         public static final double SETPOINT_L3 = Units.inchesToMeters(26);
         public static final double SETPOINT_STATION = Units.inchesToMeters(0);
         public static final double SETPOINT_TROUGH = Units.inchesToMeters(6);
@@ -114,7 +114,7 @@ public class Constants {
         public static final double PID_D = 0.0001;
 
         //Angle Information
-        public static final double ANALOG_ENCODER_OFFSET = 100.5;
+        public static final double ANALOG_ENCODER_OFFSET = 67.0 + 90.0;
         public static final double ANGLE_SETPOINT_TOLERANCE = 3;
         public static final RangeConstraint allowedAngleRange = new RangeConstraint(-90, 30);
 
@@ -156,7 +156,7 @@ public class Constants {
         public static final boolean ENCODER_INVERTED = false;
 
         //PID contoller consts
-        public static final double PID_P = 0.04;
+        public static final double PID_P = 0.035;
         public static final double PID_I = 0.002;
         public static final double PID_D = 0;
         //Angle Information
@@ -167,7 +167,7 @@ public class Constants {
         //Setpoints
         public static final double SAFTEY_THRESHOLD_DEG = 90;
         public static final double SETPOINT_TROUGH_DEG = -10.0;
-        public static final double SETPOINT_REEF_DEG = 0.0;
+        public static final double SETPOINT_REEF_DEG = 5.0;
         public static final double SETPOINT_HOME_DEG = 90.0;
         public static final double SETPOINT_STATION_DEG = 150;
 

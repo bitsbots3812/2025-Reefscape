@@ -44,16 +44,21 @@ public class CoralandElevatorSetpointSequence {
         }
 
         if (coralManipulatorSetpoint > CoralManipulatorConstants.SAFTEY_THRESHOLD_DEG) {
-            sequence.addCommands(
-                new ParallelCommandGroup(
-                    new SequentialCommandGroup (
-                        new SetCoralManipulator(CoralManipulatorConstants.SAFTEY_THRESHOLD_DEG, coralManipulator),
-                        Commands.waitUntil(() -> elevator.getPosition() < ElevatorConstants.SAFE_RANGE_M.getLowerConstraint()),
-                        new SetCoralManipulator(coralManipulatorSetpoint, coralManipulator)
-                    ),
-                    new SetElevator(elevatorSetpoint, elevator)
-                )
-            );
+            if (elevator.getSetpoint() > 0) {
+                sequence.addCommands(
+                    new ParallelCommandGroup(
+                        new SequentialCommandGroup (
+                            new SetCoralManipulator(CoralManipulatorConstants.SAFTEY_THRESHOLD_DEG, coralManipulator),
+                            Commands.waitUntil(() -> elevator.getPosition() < ElevatorConstants.SAFE_RANGE_M.getLowerConstraint()),
+                            new SetCoralManipulator(coralManipulatorSetpoint, coralManipulator)
+                        ),
+                        new SetElevator(elevatorSetpoint, elevator)
+                    )
+                );
+            }
+            else {
+                sequence.addCommands(new SetCoralManipulator(coralManipulatorSetpoint, coralManipulator));
+            }
         }
         else {
             if (coralManipulator.getSetpoint() > CoralManipulatorConstants.SAFTEY_THRESHOLD_DEG) {

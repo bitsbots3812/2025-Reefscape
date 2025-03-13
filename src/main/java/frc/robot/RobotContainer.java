@@ -111,7 +111,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
         new InstantCommand(() -> vision.setFrontCameraServo(VisionSubsystemConstants.LOW_CAMERA_ANGLE)),
         new SteerToTarget(
-          new AxisSupplier(stick::getY, 2.0, 0.01, true),
+          new AxisSupplier(stick::getY, 1.5, 0.01, true),
           () -> {return drivingReversed;}, 
           VisionSubsystemConstants.REEF_OFFSET_LEFT_M,
           () -> vision.frontCamGetYDistToTarget(VisionSubsystemConstants.REEF_OFFSET_LEFT_M), 
@@ -126,7 +126,7 @@ public class RobotContainer {
       new SequentialCommandGroup(
         new InstantCommand(() -> vision.setFrontCameraServo(VisionSubsystemConstants.LOW_CAMERA_ANGLE)),
         new SteerToTarget(
-          new AxisSupplier(stick::getY, 2.0, 0.01, true),
+          new AxisSupplier(stick::getY, 1.5, 0.01, true),
           () -> {return drivingReversed;}, 
           VisionSubsystemConstants.REEF_OFFSET_RIGHT_M,
           () -> vision.frontCamGetYDistToTarget(VisionSubsystemConstants.REEF_OFFSET_RIGHT_M), 
